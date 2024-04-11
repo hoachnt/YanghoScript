@@ -1,4 +1,4 @@
-import interpretator from "./interpretator";
+import interpretCode from "./interpretator";
 
 const code = `
     text = 'Hoach';
@@ -9,4 +9,4 @@ const code = `
     NOILIENTUC sumandmin;
     `;
 
-interpretator(code);
+interpretCode(code);

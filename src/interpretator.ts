@@ -1,7 +1,7 @@
 import Lexer from "./Lexer";
 import Parser from "./Parser";
 
-export default function interpretator(code: string) {
+export default function interpretCode(code: string) {
   const lexer = new Lexer(code);
 
   lexer.lexAnalysis();
