@@ -1,12 +1,10 @@
 import interpretCode from "./interpretator";
+import fs from "node:fs";
 
-const code = `
-    text = 'Hoach';
-    NOILIENTUC text;
-    summ = 6 + 5;
-    NOILIENTUC summ;
-    sumandmin = summ - (20 + 2);
-    NOILIENTUC sumandmin;
-    `;
+try {
+  const data = fs.readFileSync("./src/code.yangho", "utf8");
 
-interpretCode(code);
+  interpretCode(data);
+} catch (err) {
+  console.error(err);
+}
