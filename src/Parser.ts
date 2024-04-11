@@ -135,7 +135,10 @@ export default class Parser {
       return parseInt(node.number.text);
     }
     if (node instanceof StringNode) {
-      return node.string.text;
+      return node.string.text
+        .split("")
+        .filter((item) => item != "'")
+        .join("");
     }
     if (node instanceof UnarOperationNode) {
       switch (node.operator.type.name) {
