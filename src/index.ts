@@ -1,19 +1,12 @@
-import Lexer from "./Lexer";
-import Parser from "./Parser";
+import interpretator from "./interpretator";
 
 const code = `
-    summ EQUALS 6 PLUS 5;
-    LOG summ;
-    sumandmin EQUALS summ MINUS (20 PLUS 2);
-    LOG sumandmin;
+    text = 'Hoach';
+    NOILIENTUC text;
+    summ = 6 + 5;
+    NOILIENTUC summ;
+    sumandmin = summ - (20 + 2);
+    NOILIENTUC sumandmin;
     `;
 
-const lexer = new Lexer(code);
-
-lexer.lexAnalysis();
-
-const parser = new Parser(lexer.tokenList);
-
-const rootNode = parser.parseCode();
-
-parser.run(rootNode);
+interpretator(code);

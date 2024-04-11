@@ -6,6 +6,7 @@ import NumberNode from "./AST/NumberNode";
 import VariableNode from "./AST/VariableNode";
 import BinOperationNode from "./AST/BinOperationNode";
 import UnarOperationNode from "./AST/UnarOperationNode";
+import StringNode from "./AST/StringNode";
 
 export default class Parser {
   tokens: Token[];
@@ -37,7 +38,7 @@ export default class Parser {
 
     return token;
   }
-  parseVariableOrNumber(): ExpressionNode {
+  parseVariableOrNumberOrString(): ExpressionNode {
     const number = this.match(tokenTypesList.NUMBER);
 
     if (number != null) {
@@ -50,7 +51,15 @@ export default class Parser {
       return new VariableNode(variable);
     }
 
-    throw new Error(`Expecting a variable or number at position: ${this.pos}`);
+    const string = this.match(tokenTypesList.STRING);
+
+    if (string != null) {
+      return new StringNode(string);
+    }
+
+    throw new Error(
+      `Expecting a variable, number or string at position: ${this.pos}`
+    );
   }
   parsePrint(): ExpressionNode {
     const operatorLog = this.match(tokenTypesList.LOG);
@@ -69,7 +78,7 @@ export default class Parser {
 
       return node;
     } else {
-      return this.parseVariableOrNumber();
+      return this.parseVariableOrNumberOrString();
     }
   }
   parseFormula(): ExpressionNode {
@@ -91,7 +100,7 @@ export default class Parser {
     }
     this.pos -= 1;
 
-    let variableNode = this.parseVariableOrNumber();
+    let variableNode = this.parseVariableOrNumberOrString();
     const assignOperator = this.match(tokenTypesList.ASSIGN);
 
     if (assignOperator != null) {
@@ -124,6 +133,9 @@ export default class Parser {
   run(node: ExpressionNode): any {
     if (node instanceof NumberNode) {
       return parseInt(node.number.text);
+    }
+    if (node instanceof StringNode) {
+      return node.string.text;
     }
     if (node instanceof UnarOperationNode) {
       switch (node.operator.type.name) {
