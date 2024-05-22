@@ -2,6 +2,21 @@
 
 YanghoScript is a simple programming language with features for working with variables, arithmetic operations, and outputting results.
 
+## Features
+
+### Existing Features:
+
+- Assignment of values to variables
+- Arithmetic operations
+- Outputting results
+
+### Upcoming Features (Soon):
+
+- Conditional statements
+- Looping constructs
+- Functions
+- Error handling
+
 ## Installation
 
 To get started with YanghoScript, you'll need Node.js. Download and install it from the [official Node.js website](https://nodejs.org/).
@@ -71,9 +86,8 @@ Examples of correct expressions:
 
 ```javascript
 1 + 2 * 3; // Result: 9(incorrect)
-1 + (2 * 3) // Result: 7(correct)
+1 + 2 * 3; // Result: 7(correct)
 10 / (2 + 3); // Result: 2(correct)
-
 ```
 
 Using parentheses ensures the correct order of operations and prevents errors in calculations.
