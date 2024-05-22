@@ -70,8 +70,10 @@ YanghoScript supports the following constructs:
 Examples of correct expressions:
 
 ```javascript
-result = 1 + 2 * 3; // Result: 7
-divisionResult = 10 / (2 + 3); // Result: 2
+1 + 2 * 3; // Result: 9(incorrect)
+1 + (2 * 3) // Result: 7(correct)
+10 / (2 + 3); // Result: 2(correct)
+
 ```
 
 Using parentheses ensures the correct order of operations and prevents errors in calculations.
