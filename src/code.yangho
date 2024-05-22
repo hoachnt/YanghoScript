@@ -1,7 +1,10 @@
 text = 'Hoach';
-NOILIENTUC text;
 summ = 6 + 5;
+
+NOILIENTUC text;
 NOILIENTUC summ;
-sumandmin = summ - (20 + 2);
+
+sumandmin = summ - ((20 + 2) * 2);
+
 NOILIENTUC sumandmin;
 NOILIENTUC 'Chao ca lo nha minh nha';
