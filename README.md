@@ -23,7 +23,7 @@ npm install
 
 ## Usage
 
-After installation, you can use YanghoScript to execute programs written in this language. Create a file with the `.yangho` extension and write your YanghoScript code in it.
+After installation, you can use YanghoScript to execute programs written in this language. Open the `open.yangho` file and write your YanghoScript code in it.
 
 Example code:
 
