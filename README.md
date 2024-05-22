@@ -48,10 +48,16 @@ NOILIENTUC 'Chao ca lo nha minh nha';
 To run a program, use the following command in the terminal:
 
 ```
-node index.js your_script.yangho
+npm start
 ```
 
-Where `your_script.yangho` is the path to your YanghoScript code file.
+or
+
+```
+yarn start
+```
+
+Ensure that your code is written in the `code.yangho` file.
 
 ## Code Structure
 
