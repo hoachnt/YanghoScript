@@ -58,6 +58,19 @@ sumandmin = summ - ((20 + 2) * 2);
 // Output the result of the expression and a string to the screen
 NOILIENTUC sumandmin;
 NOILIENTUC 'Chao ca lo nha minh nha';
+
+// True/False operations
+NOILIENTUC 1 EQUAL 1;
+NOILIENTUC 2 MORE THAN 1;
+NOILIENTUC 1 LESS THAN 2;
+NOILIENTUC 1 MORE EQUALS 1;
+NOILIENTUC 2 LESS EQUALS 2;
+
+NOILIENTUC 2 EQUAL 1;
+NOILIENTUC 2 MORE THAN 3;
+NOILIENTUC 1 LESS THAN 0;
+NOILIENTUC 1 MORE EQUALS 2;
+NOILIENTUC 2 LESS EQUALS 1;
 ```
 
 To run a program, use the following command in the terminal:
