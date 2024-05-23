@@ -29,12 +29,31 @@ export default class Interpreter {
       switch (node.operator.type.name) {
         case tokenTypesList.PLUS.name:
           return this.run(node.leftNode) + this.run(node.rightNode);
+
         case tokenTypesList.MINUS.name:
           return this.run(node.leftNode) - this.run(node.rightNode);
+
         case tokenTypesList.MULT.name:
           return this.run(node.leftNode) * this.run(node.rightNode);
+
         case tokenTypesList.DIV.name:
           return this.run(node.leftNode) / this.run(node.rightNode);
+
+        case tokenTypesList.EQUAL.name:
+          return this.run(node.leftNode) == this.run(node.rightNode);
+
+        case tokenTypesList.LESS.name:
+          return this.run(node.leftNode) < this.run(node.rightNode);
+
+        case tokenTypesList.MORE.name:
+          return this.run(node.leftNode) > this.run(node.rightNode);
+
+        case tokenTypesList.LESSEQ.name:
+          return this.run(node.leftNode) <= this.run(node.rightNode);
+
+        case tokenTypesList.MOREQ.name:
+          return this.run(node.leftNode) >= this.run(node.rightNode);
+
         case tokenTypesList.ASSIGN.name:
           const result = this.run(node.rightNode);
           const variableNode = node.leftNode as VariableNode;

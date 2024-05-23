@@ -87,7 +87,12 @@ export default class Parser {
       tokenTypesList.MINUS,
       tokenTypesList.PLUS,
       tokenTypesList.MULT,
-      tokenTypesList.DIV
+      tokenTypesList.DIV,
+      tokenTypesList.EQUAL,
+      tokenTypesList.LESS,
+      tokenTypesList.MORE,
+      tokenTypesList.LESSEQ,
+      tokenTypesList.MOREQ
     );
     while (operator != null) {
       let rightNode = this.parseParentheses();
@@ -96,7 +101,12 @@ export default class Parser {
         tokenTypesList.MINUS,
         tokenTypesList.PLUS,
         tokenTypesList.MULT,
-        tokenTypesList.DIV
+        tokenTypesList.DIV,
+        tokenTypesList.EQUAL,
+        tokenTypesList.LESS,
+        tokenTypesList.MORE,
+        tokenTypesList.LESSEQ,
+        tokenTypesList.MOREQ
       );
     }
     return leftNode;
