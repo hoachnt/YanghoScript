@@ -9,6 +9,7 @@ YanghoScript is a simple programming language with the ability to work with vari
 - Assignment of values to variables
 - Arithmetic operations
 - Outputting results
+- Comment out a line of code
 
 ### Upcoming Features (Soon):
 
@@ -71,6 +72,8 @@ NOILIENTUC 2 MORE THAN 3;
 NOILIENTUC 1 LESS THAN 0;
 NOILIENTUC 1 MORE EQUALS 2;
 NOILIENTUC 2 LESS EQUALS 1;
+
+// NOILIENTUC 1 + 2;
 ```
 
 To run a program, use the following command in the terminal:

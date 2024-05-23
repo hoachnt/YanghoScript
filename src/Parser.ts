@@ -74,9 +74,24 @@ export default class Parser {
     if (this.match(tokenTypesList.LPAR) != null) {
       const node = this.parseFormula();
       this.require(tokenTypesList.RPAR);
+
       return node;
     } else {
       return this.parseVariableOrDataTypes();
+    }
+  }
+
+  // Parse braces
+  parseBraces(): ExpressionNode {
+    if (this.match(tokenTypesList.LBRACE) != null) {
+      const node = this.parseContext();
+
+      this.pos -= 1;
+
+      this.require(tokenTypesList.RBRACE);
+      return node;
+    } else {
+      throw new Error(`Expecting { at position: ${this.pos}`);
     }
   }
 
@@ -114,10 +129,18 @@ export default class Parser {
 
   // Parse expression
   parseExpression(): ExpressionNode {
+    // Parse not variable
     if (this.match(tokenTypesList.VARIABLE) === null) {
-      const printNode = this.parsePrint();
-      return printNode;
+      if (this.match(tokenTypesList.LOG) !== null) {
+        this.pos -= 1;
+        const printNode = this.parsePrint();
+
+        return printNode;
+      }
+      return this.parseBraces();
     }
+
+    // Parse variable
     this.pos -= 1;
     let variableNode = this.parseVariableOrDataTypes();
     const assignOperator = this.match(tokenTypesList.ASSIGN);
@@ -135,14 +158,22 @@ export default class Parser {
     );
   }
 
-  // Parse code
-  parseCode(): ExpressionNode {
+  // Parse context
+  parseContext(): ExpressionNode {
     const root = new StatementsNode();
-    while (this.pos < this.tokens.length) {
+    while (
+      this.pos < this.tokens.length &&
+      this.match(tokenTypesList.RBRACE) === null
+    ) {
       const codeStringNode = this.parseExpression();
       this.require(tokenTypesList.SEMICOLON);
+
       root.addNode(codeStringNode);
     }
     return root;
+  }
+
+  parseCode(): ExpressionNode {
+    return this.parseContext();
   }
 }

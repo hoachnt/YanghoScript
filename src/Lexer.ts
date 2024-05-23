@@ -20,9 +20,25 @@ export default class Lexer {
     return this.tokenList;
   }
 
+  skipSingleLineComment() {
+    while (this.pos < this.code.length && this.code[this.pos] !== "\n") {
+      this.pos++;
+    }
+
+    if (this.pos < this.code.length && this.code[this.pos] === "\n") {
+      this.pos++;
+    }
+  }
+
   nextToken(): boolean {
     if (this.pos >= this.code.length) {
       return false;
+    }
+
+    if (this.code.startsWith("//", this.pos)) {
+      this.skipSingleLineComment();
+      
+      return true;
     }
 
     const tokenTypesValues = Object.values(tokenTypesList);

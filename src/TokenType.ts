@@ -26,5 +26,8 @@ export const tokenTypesList = {
   MOREQ: new TokenType("MOREQ", "MORE EQUALS"),
   LPAR: new TokenType("LPAR", "\\("),
   RPAR: new TokenType("RPAR", "\\)"),
+  LBRACE: new TokenType("LBRACE", "\\{"),
+  RBRACE: new TokenType("RBRACE", "\\}"),
   STRING: new TokenType("STRING", "'.+'"),
+  SINGLE_LINE_COMMENT: { name: "SINGLE_LINE_COMMENT", regex: "//.*" },
 };
