@@ -39,7 +39,7 @@ npm install
 
 ## Usage
 
-After installation, you can use YanghoScript to execute programs written in this language. Open the `code.yangho` file and write your YanghoScript code in it.
+After installation, you can use YanghoScript to execute programs written in this language. Open the `code.ys` file and write your YanghoScript code in it.
 
 Example code:
 
@@ -88,7 +88,7 @@ or
 yarn start
 ```
 
-Ensure that your code is written in the `code.yangho` file.
+Ensure that your code is written in the `code.ys` file.
 
 ## Code Structure
 
