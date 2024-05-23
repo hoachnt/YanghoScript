@@ -1,6 +1,6 @@
 # YanghoScript
 
-YanghoScript is a simple programming language with features for working with variables, arithmetic operations, and outputting results.
+YanghoScript is a simple programming language with the ability to work with variables, arithmetic operations and display results. Was built for Vietnamese gangsters😎.
 
 ## Features
 
