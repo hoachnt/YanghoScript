@@ -11,7 +11,7 @@ YanghoScript is a simple programming language with the ability to work with vari
 - Outputting results
 - Comment out a line of code
 
-### Upcoming Features (Soon):
+### Upcoming Features (Not Really Soon):
 
 - Conditional statements
 - Looping constructs
