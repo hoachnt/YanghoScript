@@ -11,7 +11,7 @@ YanghoScript is a simple programming language with the ability to work with vari
 - Outputting results
 - Comment out a line of code
 
-### Upcoming Features (Soon):
+### Upcoming Features (Not Really Soon):
 
 - Conditional statements
 - Looping constructs
@@ -102,7 +102,7 @@ Examples of correct expressions:
 
 ```javascript
 1 + 2 * 3; // Result: 9(incorrect)
-1 + 2 * 3; // Result: 7(correct)
+1 + (2 * 3); // Result: 7(correct)
 10 / (2 + 3); // Result: 2(correct)
 ```
 
