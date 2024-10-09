@@ -10,7 +10,17 @@
   "imageSize": 100,
   "commit": true,
   "commitConvention": "angular",
-  "contributors": [],
+  "contributors": [
+    {
+      "login": "hoachnt",
+      "name": "Nguyen Tien Hoach",
+      "avatar_url": "https://avatars.githubusercontent.com/u/91771575?v=4",
+      "profile": "https://hoachnt.com/",
+      "contributions": [
+        "code"
+      ]
+    }
+  ],
   "contributorsPerLine": 7,
   "linkToUsage": true
 }
