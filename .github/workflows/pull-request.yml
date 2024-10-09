@@ -2,7 +2,7 @@ name: Add Contributors from Pull Requests
 
 on:
     pull_request:
-        types: [closed]
+        types: [closed] 
 
 jobs:
     add-contributors:
@@ -10,10 +10,10 @@ jobs:
 
         steps:
             - name: Checkout code
-              uses: actions/checkout@v2
+              uses: actions/checkout@v3 
 
             - name: Set up Node.js
-              uses: actions/setup-node@v2
+              uses: actions/setup-node@v3 
               with:
                   node-version: "16"
 
@@ -32,3 +32,5 @@ jobs:
                   git add .
                   git commit -m "chore: update contributors" || echo "No changes to commit"
                   git push
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
