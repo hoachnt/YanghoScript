@@ -2,7 +2,10 @@ name: Add Contributors from Pull Requests
 
 on:
     pull_request:
-        types: [closed] 
+        types: [closed]
+
+permissions:
+    contents: write 
 
 jobs:
     add-contributors:
@@ -10,27 +13,30 @@ jobs:
 
         steps:
             - name: Checkout code
-              uses: actions/checkout@v3 
+              uses: actions/checkout@v3
 
             - name: Set up Node.js
-              uses: actions/setup-node@v3 
+              uses: actions/setup-node@v3
               with:
                   node-version: "16"
 
             - name: Install all-contributors-cli
               run: npm install -g all-contributors-cli
 
+            - name: Configure Git user
+              run: |
+                  git config --global user.name "GitHub Actions"
+                  git config --global user.email "actions@github.com"
+
             - name: Add Contributor
               run: |
-                  all-contributors add ${{ github.event.pull_request.user.login }} code
+                  all-contributors add ${{ github.actor }} code
                   all-contributors generate
 
             - name: Commit changes
               run: |
-                  git config --global user.name "GitHub Actions"
-                  git config --global user.email "actions@github.com"
                   git add .
                   git commit -m "chore: update contributors" || echo "No changes to commit"
                   git push
               env:
-                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

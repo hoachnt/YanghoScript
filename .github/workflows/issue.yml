@@ -4,6 +4,9 @@ on:
     issues:
         types: [closed]
 
+permissions:
+    contents: write 
+
 jobs:
     add-contributors:
         runs-on: ubuntu-latest
@@ -20,15 +23,19 @@ jobs:
             - name: Install all-contributors-cli
               run: npm install -g all-contributors-cli
 
-            - name: Add Contributor
-              run: |
-                  all-contributors add ${{ github.event.issue.user.login }} code
-                  all-contributors generate
-
-            - name: Commit changes
+            - name: Configure Git user
               run: |
                   git config --global user.name "GitHub Actions"
                   git config --global user.email "actions@github.com"
+
+            - name: Add Contributor
+              run: |
+                  all-contributors add ${{ github.actor }} code
+                  all-contributors generate
+
+
+            - name: Commit changes
+              run: |
                   git add .
                   git commit -m "chore: update contributors" || echo "No changes to commit"
                   git push
