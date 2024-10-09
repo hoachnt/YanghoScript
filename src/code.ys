@@ -26,3 +26,5 @@ NOILIENTUC 2 IT BANG 1;
     b = 3;
     NOILIENTUC a + b;
 };
+
+// NOILIENTUC 'Hello world' - comment
