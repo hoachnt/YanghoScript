@@ -7,173 +7,220 @@ import VariableNode from "./AST/VariableNode";
 import BinOperationNode from "./AST/BinOperationNode";
 import UnarOperationNode from "./AST/UnarOperationNode";
 import StringNode from "./AST/StringNode";
+import IfNode from "./AST/IfNode";
 
 export default class Parser {
-  tokens: Token[];
-  pos: number = 0;
+	tokens: Token[];
+	pos: number = 0;
 
-  constructor(tokens: Token[]) {
-    this.tokens = tokens;
-  }
+	constructor(tokens: Token[]) {
+		this.tokens = tokens;
+	}
 
-  // Method to match tokens
-  match(...expected: TokenType[]): Token | null {
-    if (this.pos < this.tokens.length) {
-      const currentToken = this.tokens[this.pos];
-      if (expected.find((type) => type.name === currentToken.type.name)) {
-        this.pos += 1;
-        return currentToken;
-      }
-    }
-    return null;
-  }
+	// Method to match tokens
+	match(...expected: TokenType[]): Token | null {
+		if (this.pos < this.tokens.length) {
+			const currentToken = this.tokens[this.pos];
+			if (expected.find((type) => type.name === currentToken.type.name)) {
+				this.pos += 1;
+				return currentToken;
+			}
+		}
+		return null;
+	}
 
-  // Method to require tokens
-  require(...expected: TokenType[]): Token {
-    const token = this.match(...expected);
-    if (!token) {
-      throw new Error(
-        `Expected ${expected.map((t) => t.name).join(" or ")} at position: ${
-          this.pos
-        }`
-      );
-    }
-    return token;
-  }
+	// Method to require tokens
+	require(...expected: TokenType[]): Token {
+		const token = this.match(...expected);
+		if (!token) {
+			throw new Error(
+				`Expected ${expected
+					.map((t) => t.name)
+					.join(" or ")} at position: ${this.pos}`
+			);
+		}
+		return token;
+	}
 
-  // Parse variable or data types
-  parseVariableOrDataTypes(): ExpressionNode {
-    const number = this.match(tokenTypesList.NUMBER);
-    if (number != null) {
-      return new NumberNode(number);
-    }
-    const variable = this.match(tokenTypesList.VARIABLE);
-    if (variable != null) {
-      return new VariableNode(variable);
-    }
-    const string = this.match(tokenTypesList.STRING);
-    if (string != null) {
-      return new StringNode(string);
-    }
-    throw new Error(
-      `Expecting a variable, number, or string at position: ${this.pos}`
-    );
-  }
+	// Parse variable or data types
+	parseVariableOrDataTypes(): ExpressionNode {
+		const number = this.match(tokenTypesList.NUMBER);
+		if (number != null) {
+			return new NumberNode(number);
+		}
+		const variable = this.match(tokenTypesList.VARIABLE);
+		if (variable != null) {
+			return new VariableNode(variable);
+		}
+		const string = this.match(tokenTypesList.STRING);
+		if (string != null) {
+			return new StringNode(string);
+		}
+		throw new Error(
+			`Expecting a variable, number, or string at position: ${this.pos}`
+		);
+	}
 
-  // Parse print statement
-  parsePrint(): ExpressionNode {
-    const operatorLog = this.match(tokenTypesList.LOG);
-    if (operatorLog != null) {
-      return new UnarOperationNode(operatorLog, this.parseFormula());
-    }
-    throw new Error(`Expecting a unary operator at position: ${this.pos}`);
-  }
+	// Parse print statement
+	parsePrint(): ExpressionNode {
+		const operatorLog = this.match(tokenTypesList.LOG);
+		if (operatorLog != null) {
+			return new UnarOperationNode(operatorLog, this.parseFormula());
+		}
+		throw new Error(`Expecting a unary operator at position: ${this.pos}`);
+	}
 
-  // Parse parentheses
-  parseParentheses(): ExpressionNode {
-    if (this.match(tokenTypesList.LPAR) != null) {
-      const node = this.parseFormula();
-      this.require(tokenTypesList.RPAR);
+	// Parse parentheses
+	parseParentheses(): ExpressionNode {
+		if (this.match(tokenTypesList.LPAR) != null) {
+			const node = this.parseFormula();
+			this.require(tokenTypesList.RPAR);
 
-      return node;
-    } else {
-      return this.parseVariableOrDataTypes();
-    }
-  }
+			return node;
+		} else {
+			return this.parseVariableOrDataTypes();
+		}
+	}
 
-  // Parse braces
-  parseBraces(): ExpressionNode {
-    if (this.match(tokenTypesList.LBRACE) != null) {
-      const node = this.parseContext();
+	// Parse braces
+	parseBraces(): ExpressionNode {
+		if (this.match(tokenTypesList.LBRACE) != null) {
+			const node = this.parseContext();
 
-      this.pos -= 1;
+			this.pos -= 1;
 
-      this.require(tokenTypesList.RBRACE);
-      return node;
-    } else {
-      throw new Error(`Expecting { at position: ${this.pos}`);
-    }
-  }
+			this.require(tokenTypesList.RBRACE);
+			return node;
+		} else {
+			throw new Error(`Expecting { at position: ${this.pos}`);
+		}
+	}
 
-  // Parse formula
-  parseFormula(): ExpressionNode {
-    let leftNode = this.parseParentheses();
-    let operator = this.match(
-      tokenTypesList.MINUS,
-      tokenTypesList.PLUS,
-      tokenTypesList.MULT,
-      tokenTypesList.DIV,
-      tokenTypesList.EQUAL,
-      tokenTypesList.LESS,
-      tokenTypesList.MORE,
-      tokenTypesList.LESSEQ,
-      tokenTypesList.MOREQ
-    );
-    while (operator != null) {
-      let rightNode = this.parseParentheses();
-      leftNode = new BinOperationNode(operator, leftNode, rightNode);
-      operator = this.match(
-        tokenTypesList.MINUS,
-        tokenTypesList.PLUS,
-        tokenTypesList.MULT,
-        tokenTypesList.DIV,
-        tokenTypesList.EQUAL,
-        tokenTypesList.LESS,
-        tokenTypesList.MORE,
-        tokenTypesList.LESSEQ,
-        tokenTypesList.MOREQ
-      );
-    }
-    return leftNode;
-  }
+	// Parse formula
+	parseFormula(): ExpressionNode {
+		let leftNode = this.parseParentheses();
+		let operator = this.match(
+			tokenTypesList.MINUS,
+			tokenTypesList.PLUS,
+			tokenTypesList.MULT,
+			tokenTypesList.DIV,
+			tokenTypesList.EQUAL,
+			tokenTypesList.LESS,
+			tokenTypesList.MORE,
+			tokenTypesList.LESSEQ,
+			tokenTypesList.MOREQ
+		);
+		while (operator != null) {
+			let rightNode = this.parseParentheses();
+			leftNode = new BinOperationNode(operator, leftNode, rightNode);
+			operator = this.match(
+				tokenTypesList.MINUS,
+				tokenTypesList.PLUS,
+				tokenTypesList.MULT,
+				tokenTypesList.DIV,
+				tokenTypesList.EQUAL,
+				tokenTypesList.LESS,
+				tokenTypesList.MORE,
+				tokenTypesList.LESSEQ,
+				tokenTypesList.MOREQ
+			);
+		}
+		return leftNode;
+	}
 
-  // Parse expression
-  parseExpression(): ExpressionNode {
-    // Parse not variable
-    if (this.match(tokenTypesList.VARIABLE) === null) {
-      if (this.match(tokenTypesList.LOG) !== null) {
-        this.pos -= 1;
-        const printNode = this.parsePrint();
+	// Parse expression
+	parseExpression(): ExpressionNode {
+		// Parse not variable
+		if (this.match(tokenTypesList.VARIABLE) === null) {
+			if (this.match(tokenTypesList.LOG) !== null) {
+				// Minus 1 position because use match method
+				this.pos -= 1;
 
-        return printNode;
-      }
-      return this.parseBraces();
-    }
+				const printNode = this.parsePrint();
 
-    // Parse variable
-    this.pos -= 1;
-    let variableNode = this.parseVariableOrDataTypes();
-    const assignOperator = this.match(tokenTypesList.ASSIGN);
-    if (assignOperator != null) {
-      const rightFormulaNode = this.parseFormula();
-      const binaryNode = new BinOperationNode(
-        assignOperator,
-        variableNode,
-        rightFormulaNode
-      );
-      return binaryNode;
-    }
-    throw new Error(
-      `After the variable, an assignment operator is expected at position: ${this.pos}`
-    );
-  }
+				return printNode;
+			}
+			if (this.match(tokenTypesList.IF)) {
+				// Minus 1 position because use match method
+				this.pos -= 1;
 
-  // Parse context
-  parseContext(): ExpressionNode {
-    const root = new StatementsNode();
-    while (
-      this.pos < this.tokens.length &&
-      this.match(tokenTypesList.RBRACE) === null
-    ) {
-      const codeStringNode = this.parseExpression();
-      this.require(tokenTypesList.SEMICOLON);
+				return this.parseIfStatement();
+			}
+		}
 
-      root.addNode(codeStringNode);
-    }
-    return root;
-  }
+		// Parse variable
+		this.pos -= 1;
+		let variableNode = this.parseVariableOrDataTypes();
+		const assignOperator = this.match(tokenTypesList.ASSIGN);
+		if (assignOperator != null) {
+			const rightFormulaNode = this.parseFormula();
+			const binaryNode = new BinOperationNode(
+				assignOperator,
+				variableNode,
+				rightFormulaNode
+			);
+			return binaryNode;
+		}
+		throw new Error(
+			`After the variable, an assignment operator is expected at position: ${this.pos}`
+		);
+	}
 
-  parseCode(): ExpressionNode {
-    return this.parseContext();
-  }
+	// Parse if else
+	parseIfStatement(): ExpressionNode {
+		this.require(tokenTypesList.IF); // Expecting 'NEU'
+		const condition = this.parseFormula(); // Parse the condition
+
+		// Ensure we expect a left brace
+		if (this.match(tokenTypesList.LBRACE) === null) {
+			throw new Error(`Expecting '{' at position: ${this.pos}`);
+		}
+
+		const trueBlock = this.parseContext(); // Parse the true block
+
+		// Minus 1 position because parseContext has match method to check RBRACE
+		this.pos -= 1;
+
+		this.require(tokenTypesList.RBRACE); // Expecting '}'
+
+		let falseBlock: ExpressionNode | null = null; // Initialize false block
+		if (this.match(tokenTypesList.ELSE) !== null) {
+			// Check for 'KO THI'
+			if (this.match(tokenTypesList.LBRACE) === null) {
+				throw new Error(`Expecting '{' at position: ${this.pos}`);
+			}
+			falseBlock = this.parseContext(); // Parse the false block
+
+			// Minus 1 position because parseContext has match method to check RBRACE
+			this.pos -= 1;
+
+			this.require(tokenTypesList.RBRACE); // Expecting '}'
+		}
+
+		return new IfNode(condition, trueBlock, falseBlock); // Create the IfStatementNode
+	}
+
+	// Parse context
+	parseContext(): ExpressionNode {
+		const root = new StatementsNode();
+
+		while (this.pos < this.tokens.length) {
+			if (this.match(tokenTypesList.RBRACE) !== null) break;
+
+			const codeStringNode = this.parseExpression();
+
+			// Check if the parsed expression is an if statement
+			if (codeStringNode instanceof IfNode) {
+				root.addNode(codeStringNode);
+			} else {
+				this.require(tokenTypesList.SEMICOLON); // Expecting ';'
+				root.addNode(codeStringNode);
+			}
+		}
+		return root;
+	}
+
+	parseCode(): ExpressionNode {
+		return this.parseContext();
+	}
 }

@@ -21,10 +21,12 @@ NOILIENTUC 1 IT HON 0;
 NOILIENTUC 1 NHIEU BANG 2;
 NOILIENTUC 2 IT BANG 1;
 
-{
-    a = 3;
-    b = 3;
-    NOILIENTUC a + b;
-};
+NEU (2 BANG 1) {
+    NOILIENTUC 'Yasuo';
+} KO THI {
+    NOILIENTUC 'Kosuo';
+}
+
+NOILIENTUC 'All Works!!!';
 
 // NOILIENTUC 'Hello world' - comment

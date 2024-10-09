@@ -28,6 +28,8 @@ export const tokenTypesList = {
   RPAR: new TokenType("RPAR", "\\)"),
   LBRACE: new TokenType("LBRACE", "\\{"),
   RBRACE: new TokenType("RBRACE", "\\}"),
+  IF: new TokenType("IF", "NEU"),
+  ELSE: new TokenType("ELSE", "KO THI"),
   STRING: new TokenType("STRING", "'.+'"),
   SINGLE_LINE_COMMENT: { name: "SINGLE_LINE_COMMENT", regex: "//.*" },
 };
