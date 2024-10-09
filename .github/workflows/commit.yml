@@ -34,6 +34,9 @@ jobs:
                   all-contributors add ${{ github.actor }} code
                   all-contributors generate
 
+            - name: Pull latest changes
+              run: git pull origin main --rebase
+
             - name: Commit changes
               run: |
                   git add .
