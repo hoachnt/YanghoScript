@@ -6,17 +6,17 @@ YanghoScript is a simple programming language with the ability to work with vari
 
 ### Existing Features:
 
-- Assignment of values to variables
-- Arithmetic operations
-- Outputting results
-- Comment out a line of code
+-   Assignment of values to variables
+-   Arithmetic operations
+-   Outputting results
+-   Comment out a line of code
 
 ### Upcoming Features (Not Really Soon):
 
-- Conditional statements(Partially implemented)
-- Looping constructs
-- Functions
-- Error handling
+-   Conditional statements(Partially implemented)
+-   Looping constructs
+-   Functions
+-   Error handling
 
 ## Installation
 
@@ -34,7 +34,7 @@ git clone https://github.com/hoachnt/YanghoScript.git
 
 ```
 cd YanghoScript
-npm install
+bun install
 ```
 
 ## Usage
@@ -81,13 +81,7 @@ NOILIENTUC 'All Works!!!';
 To run a program, use the following command in the terminal:
 
 ```
-npm start
-```
-
-or
-
-```
-yarn start
+bun start
 ```
 
 Ensure that your code is written in the `code.ys` file.
@@ -96,9 +90,9 @@ Ensure that your code is written in the `code.ys` file.
 
 YanghoScript supports the following constructs:
 
-- Assignment of values to variables: `variable = value;`
-- Arithmetic operations: `+, -, *, /`
-- Use parentheses for correct order of arithmetic operations. For example, for the expression `1 + 2 * 3`, it should be written as `1 + (2 * 3)`.
+-   Assignment of values to variables: `variable = value;`
+-   Arithmetic operations: `+, -, *, /`
+-   Use parentheses for correct order of arithmetic operations. For example, for the expression `1 + 2 * 3`, it should be written as `1 + (2 * 3)`.
 
 Examples of correct expressions:
 
