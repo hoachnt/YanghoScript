@@ -23,12 +23,12 @@
 	"license": "MIT",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/hoachnt/yanghoscript.git"
+		"url": "https://github.com/hoachnt/YanghoScript.git"
 	},
 	"bugs": {
-		"url": "https://github.com/hoachnt/yanghoscript/issues"
+		"url": "https://github.com/hoachnt/YanghoScript/issues"
 	},
-	"homepage": "https://github.com/hoachnt/yanghoscript",
+	"homepage": "https://github.com/hoachnt/YanghoScript#readme",
 	"files": [
 		"build/"
 	],
