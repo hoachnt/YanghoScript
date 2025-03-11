@@ -1,19 +1,31 @@
 {
 	"name": "yanghoscript",
 	"version": "1.0.0",
-	"description": "",
-	"main": "index.ts",
+	"description": "YanghoScript is a simple programming language with the ability to work with variables, arithmetic operations, and display results. Was built for Vietnamese gangsters😎.",
+	"main": "build/index.js",
+	"types": "build/index.d.ts",
 	"bin": {
-		"yanghoscript": "./build/index.js"
+		"yanghoscript": "./build/cli.js"
 	},
 	"scripts": {
 		"build": "tsc",
-		"start": "nodemon"
+		"start": "node build/cli.js",
+		"dev": "ts-node src/cli.ts",
+		"prepare": "npm run build"
 	},
-	"keywords": [],
+	"keywords": [
+		"yanghoscript",
+		"typescript",
+		"cli",
+		"scripting"
+	],
 	"author": "Hoachnt",
 	"license": "ISC",
-	"dependencies": {
+	"files": [
+		"build/"
+	],
+	"dependencies": { "commander": "^13.1.0" },
+	"devDependencies": {
 		"@types/node": "^20.12.7",
 		"nodemon": "^3.1.0",
 		"ts-node": "^10.9.2",
