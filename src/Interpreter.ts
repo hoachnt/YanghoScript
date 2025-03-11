@@ -11,110 +11,183 @@ import VariableNode from "./AST/VariableNode";
 import Token from "./Token";
 import { tokenTypesList } from "./TokenType";
 
+// Define an immutable environment interface.
+export interface Environment {
+	scope: Record<string, any>;
+	functions: Record<string, FunctionDeclarationNode>;
+}
+
+// Evaluation result type carrying both computed value and the updated environment.
+type EvalResult = { value: any; env: Environment };
+
+function evaluate(node: ExpressionNode, env: Environment): EvalResult {
+	// Function declaration: extend the functions map.
+	if (node instanceof FunctionDeclarationNode) {
+		return {
+			value: undefined,
+			env: {
+				scope: { ...env.scope },
+				functions: { ...env.functions, [node.name.text]: node },
+			},
+		};
+	}
+
+	// Function call: evaluate arguments, create a local scope and call the function body.
+	if (node instanceof FunctionCallNode) {
+		const func = env.functions[node.name.text];
+		if (!func) {
+			throw new Error(`Function '${node.name.text}' not found`);
+		}
+		// Evaluate arguments
+		let interimEnv = env;
+		const args = node.args.map((arg) => {
+			const res = evaluate(arg, interimEnv);
+			interimEnv = res.env;
+			return res.value;
+		});
+		// Create a new local scope for the function call
+		const localScope = { ...env.scope };
+		func.params.forEach((param: Token, index: number) => {
+			localScope[param.text] = args[index];
+		});
+		const funcEnv: Environment = {
+			scope: localScope,
+			functions: env.functions,
+		};
+		const result = evaluate(func.body, funcEnv);
+		// Do not propagate local changes back to global env.
+		return { value: result.value, env: env };
+	}
+
+	// If statement: evaluate condition and then one of the branches.
+	if (node instanceof IfNode) {
+		const conditionRes = evaluate(node.condition, env);
+		if (conditionRes.value) {
+			return evaluate(node.trueBlock, conditionRes.env);
+		} else if (node.falseBlock) {
+			return evaluate(node.falseBlock, conditionRes.env);
+		} else {
+			return { value: undefined, env: conditionRes.env };
+		}
+	}
+
+	// Numeric literal.
+	if (node instanceof NumberNode) {
+		return { value: parseInt(node.number.text), env };
+	}
+
+	// String literal.
+	if (node instanceof StringNode) {
+		return { value: node.string.text.replace(/'/g, ""), env };
+	}
+
+	// Unary operation.
+	if (node instanceof UnarOperationNode) {
+		if (node.operator.type.name === tokenTypesList.LOG.name) {
+			const operandRes = evaluate(node.operand, env);
+			console.log(operandRes.value);
+			return { value: undefined, env: operandRes.env };
+		}
+	}
+
+	// Binary operations.
+	if (node instanceof BinOperationNode) {
+		switch (node.operator.type.name) {
+			case tokenTypesList.PLUS.name: {
+				const left = evaluate(node.leftNode, env);
+				const right = evaluate(node.rightNode, left.env);
+				return { value: left.value + right.value, env: right.env };
+			}
+			case tokenTypesList.MINUS.name: {
+				const left = evaluate(node.leftNode, env);
+				const right = evaluate(node.rightNode, left.env);
+				return { value: left.value - right.value, env: right.env };
+			}
+			case tokenTypesList.MULT.name: {
+				const left = evaluate(node.leftNode, env);
+				const right = evaluate(node.rightNode, left.env);
+				return { value: left.value * right.value, env: right.env };
+			}
+			case tokenTypesList.DIV.name: {
+				const left = evaluate(node.leftNode, env);
+				const right = evaluate(node.rightNode, left.env);
+				return { value: left.value / right.value, env: right.env };
+			}
+			case tokenTypesList.EQUAL.name: {
+				const left = evaluate(node.leftNode, env);
+				const right = evaluate(node.rightNode, left.env);
+				return { value: left.value == right.value, env: right.env };
+			}
+			case tokenTypesList.LESS.name: {
+				const left = evaluate(node.leftNode, env);
+				const right = evaluate(node.rightNode, left.env);
+				return { value: left.value < right.value, env: right.env };
+			}
+			case tokenTypesList.MORE.name: {
+				const left = evaluate(node.leftNode, env);
+				const right = evaluate(node.rightNode, left.env);
+				return { value: left.value > right.value, env: right.env };
+			}
+			case tokenTypesList.LESSEQ.name: {
+				const left = evaluate(node.leftNode, env);
+				const right = evaluate(node.rightNode, left.env);
+				return { value: left.value <= right.value, env: right.env };
+			}
+			case tokenTypesList.MOREQ.name: {
+				const left = evaluate(node.leftNode, env);
+				const right = evaluate(node.rightNode, left.env);
+				return { value: left.value >= right.value, env: right.env };
+			}
+			case tokenTypesList.ASSIGN.name: {
+				const rightRes = evaluate(node.rightNode, env);
+				if (!(node.leftNode instanceof VariableNode)) {
+					throw new Error(
+						"Left node of assignment must be a variable"
+					);
+				}
+				const varName = node.leftNode.variable.text;
+				const newScope = { ...env.scope, [varName]: rightRes.value };
+				return {
+					value: rightRes.value,
+					env: { scope: newScope, functions: env.functions },
+				};
+			}
+			default:
+				throw new Error("Unknown binary operator");
+		}
+	}
+
+	// Variable access.
+	if (node instanceof VariableNode) {
+		const varName = node.variable.text;
+		if (env.scope.hasOwnProperty(varName)) {
+			return { value: env.scope[varName], env };
+		} else {
+			throw new Error(`Variable '${varName}' not found`);
+		}
+	}
+
+	// Statements: evaluate each statement sequentially, threading the updated environment.
+	if (node instanceof StatementsNode) {
+		let currentEnv = env;
+		let lastValue: any = undefined;
+		for (const statement of node.codeStrings) {
+			const res = evaluate(statement, currentEnv);
+			lastValue = res.value;
+			currentEnv = res.env;
+		}
+		return { value: lastValue, env: currentEnv };
+	}
+
+	throw new Error("Unknown node type encountered!");
+}
+
 export default class Interpreter {
-	scope: any = {};
-	functions: any = {};
+	private env: Environment = { scope: {}, functions: {} };
 
-	// Method to execute parsed code
 	run(node: ExpressionNode): any {
-		if (node instanceof FunctionDeclarationNode) {
-			this.functions[node.name.text] = node;
-			return;
-		}
-
-		if (node instanceof FunctionCallNode) {
-			const func = this.functions[node.name.text];
-			if (!func) {
-				throw new Error(`Function '${node.name.text}' not found`);
-			}
-
-			const args = node.args.map((arg) => this.run(arg));
-			const localScope = { ...this.scope };
-
-			func.params.forEach((param: Token, index: number) => {
-				this.scope[param.text] = args[index];
-			});
-
-			const result = this.run(func.body);
-
-			this.scope = localScope;
-
-			return result;
-		}
-
-		if (node instanceof IfNode) {
-			const conditionResult = this.run(node.condition); // Evaluate condition
-			if (conditionResult) {
-				return this.run(node.trueBlock); // Execute true block
-			} else if (node.falseBlock) {
-				return this.run(node.falseBlock); // Execute false block if exists
-			} else {
-				return;
-			}
-		}
-		if (node instanceof NumberNode) {
-			return parseInt(node.number.text);
-		}
-		if (node instanceof StringNode) {
-			return node.string.text.replace(/'/g, "");
-		}
-		if (node instanceof UnarOperationNode) {
-			switch (node.operator.type.name) {
-				case tokenTypesList.LOG.name:
-					console.log(this.run(node.operand));
-					return;
-			}
-		}
-		if (node instanceof BinOperationNode) {
-			switch (node.operator.type.name) {
-				case tokenTypesList.PLUS.name:
-					return this.run(node.leftNode) + this.run(node.rightNode);
-
-				case tokenTypesList.MINUS.name:
-					return this.run(node.leftNode) - this.run(node.rightNode);
-
-				case tokenTypesList.MULT.name:
-					return this.run(node.leftNode) * this.run(node.rightNode);
-
-				case tokenTypesList.DIV.name:
-					return this.run(node.leftNode) / this.run(node.rightNode);
-
-				case tokenTypesList.EQUAL.name:
-					return this.run(node.leftNode) == this.run(node.rightNode);
-
-				case tokenTypesList.LESS.name:
-					return this.run(node.leftNode) < this.run(node.rightNode);
-
-				case tokenTypesList.MORE.name:
-					return this.run(node.leftNode) > this.run(node.rightNode);
-
-				case tokenTypesList.LESSEQ.name:
-					return this.run(node.leftNode) <= this.run(node.rightNode);
-
-				case tokenTypesList.MOREQ.name:
-					return this.run(node.leftNode) >= this.run(node.rightNode);
-
-				case tokenTypesList.ASSIGN.name:
-					const result = this.run(node.rightNode);
-					const variableNode = node.leftNode as VariableNode;
-					this.scope[variableNode.variable.text] = result;
-					return result;
-			}
-		}
-		if (node instanceof VariableNode) {
-			const variableName = node.variable.text;
-			if (this.scope.hasOwnProperty(variableName)) {
-				return this.scope[variableName];
-			} else {
-				throw new Error(`Variable '${variableName}' not found`);
-			}
-		}
-		if (node instanceof StatementsNode) {
-			node.codeStrings.forEach((codeString) => {
-				this.run(codeString);
-			});
-			return;
-		}
-		throw new Error("Unknown node type encountered!");
+		const result = evaluate(node, this.env);
+		this.env = result.env;
+		return result.value;
 	}
 }
