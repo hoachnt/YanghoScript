@@ -11,7 +11,7 @@
 		"build": "tsc",
 		"start": "node build/cli.js",
 		"dev": "ts-node src/cli.ts",
-		"prepare": "npm run build && npm run lint"
+		"prepare": "npm run build"
 	},
 	"keywords": [
 		"yanghoscript",
@@ -30,16 +30,7 @@
 	},
 	"homepage": "https://github.com/hoachnt/yanghoscript",
 	"files": [
-		"build/cli.js",
-		"build/index.js",
-		"build/Interpreter.js",
-		"build/Lexer.js",
-		"build/Parser.js",
-		"build/Token.js",
-		"build/TokenType.js",
-		"package.json",
-		"README.md",
-		"LICENSE"
+		"build/"
 	],
 	"dependencies": {
 		"commander": "^13.1.0"
