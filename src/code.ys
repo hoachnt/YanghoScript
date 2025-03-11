@@ -1,10 +1,10 @@
 text BAYHETVAODAY 'Hoach';
-summ BAYHETVAODAY 6 + 5;
+summ BAYHETVAODAY 6 CONG 5;
 
 NOILIENTUC text;
 NOILIENTUC summ;
 
-sumandmin BAYHETVAODAY summ - ((20 + 2) * 2);
+sumandmin BAYHETVAODAY summ TRU ((20 CONG 2) NHAN 2);
 
 NOILIENTUC sumandmin;
 NOILIENTUC 'Chao ca lo nha minh nha';
@@ -32,7 +32,7 @@ NEU (2 UY TIN 1) {
 
 // Create a function
 HAM greet(name) {
-    NOILIENTUC 'Hello, ' + name;
+    NOILIENTUC 'Hello, ' CONG name;
 }
 
 // Call a function
