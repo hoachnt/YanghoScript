@@ -40,11 +40,27 @@ DIT cong(a, b) ME
     TRA a + b IM
 MAY
 
-NOILIENTUC cong(1, 2) IM
 
 // Call a function
 greet('Hoachnt') IM
+NOILIENTUC cong(1, 2) IM
 
+
+
+number = 5 IM
+
+DIT recursion(n) ME
+    NEU (n ITHON 1) ME
+        TRA 1 IM
+    MAY KOTHI ME
+        NOILIENTUC n IM
+
+        TRA recursion(n - 1) IM
+    MAY    
+MAY
+
+
+recursion(number) IM
 
 NOILIENTUC 'All Works!!!' IM
 
