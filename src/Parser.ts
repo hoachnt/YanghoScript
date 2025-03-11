@@ -10,6 +10,7 @@ import StringNode from "./AST/StringNode";
 import IfNode from "./AST/IfNode";
 import FunctionDeclarationNode from "./AST/FunctionDeclarationNode";
 import FunctionCallNode from "./AST/FunctionCallNode";
+import ReturnNode from "./AST/ReturnNode";
 
 export default class Parser {
 	tokens: Token[];
@@ -200,11 +201,24 @@ export default class Parser {
 		return new FunctionCallNode(name, args);
 	}
 
+	// Parse return statement
+	parseReturn(): ExpressionNode {
+		// Already matched the 'RETURN' token in parseExpression.
+		const token = this.require(tokenTypesList.RETURN);
+		const expr = this.parseFormula();
+		// Optionally require a semicolon if needed:
+		this.require(tokenTypesList.SEMICOLON);
+		return new ReturnNode(expr);
+	}
+
 	// Parse expressions
 	parseExpression(): ExpressionNode {
 		const currentToken = this.tokens[this.pos];
 		if (currentToken.type.name === tokenTypesList.FUNCTION.name) {
 			return this.parseFunctionDeclaration();
+		}
+		if (currentToken.type.name === tokenTypesList.RETURN.name) {
+			return this.parseReturn();
 		}
 
 		// Other checks
@@ -283,10 +297,12 @@ export default class Parser {
 
 			const codeStringNode = this.parseExpression();
 
-			// If the expression is an IF construct or function declaration, a semicolon is not required
+			// If the expression is an IF construct, function declaration, or return,
+			// a semicolon is not required.
 			if (
 				codeStringNode instanceof IfNode ||
-				codeStringNode instanceof FunctionDeclarationNode
+				codeStringNode instanceof FunctionDeclarationNode ||
+				codeStringNode instanceof ReturnNode
 			) {
 				root.addNode(codeStringNode);
 			} else {

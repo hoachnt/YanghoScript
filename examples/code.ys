@@ -36,6 +36,12 @@ DIT greet(name) ME
     NOILIENTUC 'Hello, ' + name IM
 MAY
 
+DIT cong(a, b) ME
+    TRA a + b IM
+MAY
+
+NOILIENTUC cong(1, 2) IM
+
 // Call a function
 greet('Hoachnt') IM
 

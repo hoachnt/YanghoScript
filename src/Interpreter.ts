@@ -4,6 +4,7 @@ import FunctionCallNode from "./AST/FunctionCallNode";
 import FunctionDeclarationNode from "./AST/FunctionDeclarationNode";
 import IfNode from "./AST/IfNode";
 import NumberNode from "./AST/NumberNode";
+import ReturnNode from "./AST/ReturnNode";
 import StatementsNode from "./AST/StatementsNode";
 import StringNode from "./AST/StringNode";
 import UnarOperationNode from "./AST/UnarOperationNode";
@@ -20,7 +21,19 @@ export interface Environment {
 // Evaluation result type carrying both computed value and the updated environment.
 type EvalResult = { value: any; env: Environment };
 
+class ReturnException {
+	value: any;
+	constructor(value: any) {
+		this.value = value;
+	}
+}
+
 function evaluate(node: ExpressionNode, env: Environment): EvalResult {
+	if (node instanceof ReturnNode) {
+		const result = evaluate(node.expression, env);
+		throw new ReturnException(result.value);
+	}
+
 	// Function declaration: extend the functions map.
 	if (node instanceof FunctionDeclarationNode) {
 		return {
@@ -38,25 +51,29 @@ function evaluate(node: ExpressionNode, env: Environment): EvalResult {
 		if (!func) {
 			throw new Error(`Function '${node.name.text}' not found`);
 		}
-		// Evaluate arguments
 		let interimEnv = env;
 		const args = node.args.map((arg) => {
 			const res = evaluate(arg, interimEnv);
 			interimEnv = res.env;
 			return res.value;
 		});
-		// Create a new local scope for the function call
 		const localScope = { ...env.scope };
-		func.params.forEach((param: Token, index: number) => {
+		func.params.forEach((param, index) => {
 			localScope[param.text] = args[index];
 		});
-		const funcEnv: Environment = {
+		const funcEnv = {
 			scope: localScope,
 			functions: env.functions,
 		};
-		const result = evaluate(func.body, funcEnv);
-		// Do not propagate local changes back to global env.
-		return { value: result.value, env: env };
+		try {
+			const result = evaluate(func.body, funcEnv);
+			return { value: result.value, env: env };
+		} catch (err) {
+			if (err instanceof ReturnException) {
+				return { value: err.value, env: env };
+			}
+			throw err;
+		}
 	}
 
 	// If statement: evaluate condition and then one of the branches.
@@ -186,8 +203,16 @@ export default class Interpreter {
 	private env: Environment = { scope: {}, functions: {} };
 
 	run(node: ExpressionNode): any {
-		const result = evaluate(node, this.env);
-		this.env = result.env;
-		return result.value;
+		try {
+			const result = evaluate(node, this.env);
+			this.env = result.env;
+			return result.value;
+		} catch (err) {
+			if (err instanceof ReturnException) {
+				// If a return is encountered at the top level, simply return its value.
+				return err.value;
+			}
+			throw err;
+		}
 	}
 }
