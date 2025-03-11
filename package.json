@@ -1,18 +1,22 @@
 {
-  "name": "yanghoscript",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.ts",
-  "scripts": {
-    "start": "nodemon"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "dependencies": {
-    "@types/node": "^20.12.7",
-    "nodemon": "^3.1.0",
-    "ts-node": "^10.9.2",
-    "typescript": "^5.4.4"
-  }
+	"name": "yanghoscript",
+	"version": "1.0.0",
+	"description": "",
+	"main": "index.ts",
+	"bin": {
+		"yanghoscript": "./build/index.js"
+	},
+	"scripts": {
+		"build": "tsc",
+		"start": "nodemon"
+	},
+	"keywords": [],
+	"author": "Hoachnt",
+	"license": "ISC",
+	"dependencies": {
+		"@types/node": "^20.12.7",
+		"nodemon": "^3.1.0",
+		"ts-node": "^10.9.2",
+		"typescript": "^5.4.4"
+	}
 }
