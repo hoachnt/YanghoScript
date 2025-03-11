@@ -1,7 +1,7 @@
 {
 	"name": "yanghoscript",
 	"version": "1.0.0",
-	"description": "YanghoScript is a simple programming language with the ability to work with variables, arithmetic operations, and display results. Was built for Vietnamese gangsters😎.",
+	"description": "YanghoScript is a lightweight programming language for scripting and automation.",
 	"main": "build/index.js",
 	"types": "build/index.d.ts",
 	"bin": {
@@ -11,7 +11,7 @@
 		"build": "tsc",
 		"start": "node build/cli.js",
 		"dev": "ts-node src/cli.ts",
-		"prepare": "npm run build"
+		"prepare": "npm run build && npm run lint"
 	},
 	"keywords": [
 		"yanghoscript",
@@ -21,10 +21,29 @@
 	],
 	"author": "Hoachnt",
 	"license": "MIT",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/hoachnt/yanghoscript.git"
+	},
+	"bugs": {
+		"url": "https://github.com/hoachnt/yanghoscript/issues"
+	},
+	"homepage": "https://github.com/hoachnt/yanghoscript",
 	"files": [
-		"build/"
+		"build/cli.js",
+		"build/index.js",
+		"build/Interpreter.js",
+		"build/Lexer.js",
+		"build/Parser.js",
+		"build/Token.js",
+		"build/TokenType.js",
+		"package.json",
+		"README.md",
+		"LICENSE"
 	],
-	"dependencies": { "commander": "^13.1.0" },
+	"dependencies": {
+		"commander": "^13.1.0"
+	},
 	"devDependencies": {
 		"@types/node": "^20.12.7",
 		"nodemon": "^3.1.0",
