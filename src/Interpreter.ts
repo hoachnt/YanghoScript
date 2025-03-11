@@ -20,8 +20,8 @@ export default class Interpreter {
 			} else if (node.falseBlock) {
 				return this.run(node.falseBlock); // Execute false block if exists
 			} else {
-        return
-      }
+				return;
+			}
 		}
 		if (node instanceof NumberNode) {
 			return parseInt(node.number.text);

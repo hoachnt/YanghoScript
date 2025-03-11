@@ -169,35 +169,41 @@ export default class Parser {
 	// Parse if else
 	parseIfStatement(): ExpressionNode {
 		this.require(tokenTypesList.IF); // Expecting 'NEU'
-		const condition = this.parseFormula(); // Parse the condition
+		const condition = this.parseFormula(); // Parsing the condition
 
-		// Ensure we expect a left brace
+		// Ensure that we expect a left curly brace
 		if (this.match(tokenTypesList.LBRACE) === null) {
-			throw new Error(`Expecting '{' at position: ${this.pos}`);
+			throw new Error(`Expected '{' at position: ${this.pos}`);
 		}
 
-		const trueBlock = this.parseContext(); // Parse the true block
+		const trueBlock = this.parseContext(); // Parsing the true block
 
-		// Minus 1 position because parseContext has match method to check RBRACE
+		// Move back one position because parseContext uses the match method to check for RBRACE
 		this.pos -= 1;
 
 		this.require(tokenTypesList.RBRACE); // Expecting '}'
 
-		let falseBlock: ExpressionNode | null = null; // Initialize false block
+		let falseBlock: ExpressionNode | null = null; // Initializing the false block
 		if (this.match(tokenTypesList.ELSE) !== null) {
-			// Check for 'KO THI'
-			if (this.match(tokenTypesList.LBRACE) === null) {
-				throw new Error(`Expecting '{' at position: ${this.pos}`);
+			// Checking for 'KO THI'
+			if (this.match(tokenTypesList.IF) !== null) {
+				// If 'else if' exists
+				this.pos -= 1; // Move back one position because we use the match method
+				falseBlock = this.parseIfStatement(); // Recursively parse else if
+			} else {
+				if (this.match(tokenTypesList.LBRACE) === null) {
+					throw new Error(`Expected '{' at position: ${this.pos}`);
+				}
+				falseBlock = this.parseContext(); // Parsing the false block
+
+				// Move back one position because parseContext uses the match method to check for RBRACE
+				this.pos -= 1;
+
+				this.require(tokenTypesList.RBRACE); // Expecting '}'
 			}
-			falseBlock = this.parseContext(); // Parse the false block
-
-			// Minus 1 position because parseContext has match method to check RBRACE
-			this.pos -= 1;
-
-			this.require(tokenTypesList.RBRACE); // Expecting '}'
 		}
 
-		return new IfNode(condition, trueBlock, falseBlock); // Create the IfStatementNode
+		return new IfNode(condition, trueBlock, falseBlock); // Creating IfNode
 	}
 
 	// Parse context

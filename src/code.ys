@@ -23,8 +23,10 @@ NOILIENTUC 2 IT BANG 1;
 
 NEU (2 UY TIN 1) {
     NOILIENTUC 'Yasuo';
-} KO THI {
+} KO THI NEU (2 NHIEU HON 1) {
     NOILIENTUC 'Kosuo';
+} KO THI {
+    NOILIENTUC 'Default';
 }
 
 NOILIENTUC 'All Works!!!';
