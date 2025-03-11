@@ -1,6 +1,4 @@
-# YanghoScript
-
-YanghoScript is a simple programming language with the ability to work with variables, arithmetic operations and display results. Was built for Vietnamese gangsters😎.
+YanghoScript is a simple programming language with the ability to work with variables, arithmetic operations, and display results. Was built for Vietnamese gangsters😎.
 
 ## Features
 
@@ -11,7 +9,7 @@ YanghoScript is a simple programming language with the ability to work with vari
 -   Outputting results
 -   Comment out a line of code
 -   Conditional statements
--   Functions(Partially implemented)
+-   Functions (Partially implemented)
 
 ### Upcoming Features (Not Really Soon):
 
@@ -26,13 +24,13 @@ Then follow these steps:
 
 1. Clone the repository:
 
-```
+```bash
 git clone https://github.com/hoachnt/YanghoScript.git
 ```
 
 2. Install dependencies:
 
-```
+```bash
 cd YanghoScript
 bun install
 ```
@@ -41,32 +39,40 @@ bun install
 
 After installation, you can use YanghoScript to execute programs written in this language. Open the `code.ys` file and write your YanghoScript code in it.
 
-Example code:
+### Variable Assignment
 
 ```javascript
 text BAYHETVAODAY 'Hoach';
 summ BAYHETVAODAY 6 CONG 5;
+```
 
+### Outputting Results
+
+```javascript
 NOILIENTUC text;
 NOILIENTUC summ;
+```
 
+### Arithmetic Operations
+
+```javascript
 sumandmin BAYHETVAODAY summ TRU ((20 CONG 2) NHAN 2);
-
 NOILIENTUC sumandmin;
-NOILIENTUC 'Chao ca lo nha minh nha';
+```
 
+### Comparisons
+
+```javascript
 NOILIENTUC 1 UY TIN 1;
 NOILIENTUC 2 NHIEU HON 1;
 NOILIENTUC 1 IT HON 2;
 NOILIENTUC 1 NHIEU BANG 1;
 NOILIENTUC 2 IT BANG 2;
+```
 
-NOILIENTUC 2 UY TIN 1;
-NOILIENTUC 2 NHIEU HON 3;
-NOILIENTUC 1 IT HON 0;
-NOILIENTUC 1 NHIEU BANG 2;
-NOILIENTUC 2 IT BANG 1;
+### Conditional Statements
 
+```javascript
 NEU (2 UY TIN 1) {
     NOILIENTUC 'Yasuo';
 } KO THI NEU (2 NHIEU HON 1) {
@@ -74,8 +80,11 @@ NEU (2 UY TIN 1) {
 } KO THI {
     NOILIENTUC 'Default';
 }
+```
 
+### Functions
 
+```javascript
 // Create a function
 HAM greet(name) {
     NOILIENTUC 'Hello, ' CONG name;
@@ -83,10 +92,11 @@ HAM greet(name) {
 
 // Call a function
 greet('Hoachnt');
+```
 
+### Comments
 
-NOILIENTUC 'All Works!!!';
-
+```javascript
 // NOILIENTUC 'Hello world' - comment
 ```
 
@@ -104,7 +114,7 @@ YanghoScript supports the following constructs:
 
 -   Assignment of values to variables: `variable = value;`
 -   Arithmetic operations: `+, -, *, /`
--   Use parentheses for correct order of arithmetic operations. For example, for the expression `1 + 2 * 3`, it should be written as `1 + (2 * 3)`.
+-   Use parentheses for correct order of arithmetic operations.
 
 Examples of correct expressions:
 
@@ -120,7 +130,7 @@ Using parentheses ensures the correct order of operations and prevents errors in
 
 YanghoScript is in an early stage of development and may have some limitations and shortcomings. If you find any bugs or have suggestions for improvements, feel free to report them in the Issues section on GitHub.
 
-Don't forget that YanhoScript is a joke programming language.
+Don't forget that YanghoScript is a joke programming language.
 
 ## Contributors ✨
 
