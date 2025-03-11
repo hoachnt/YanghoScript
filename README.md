@@ -20,15 +20,29 @@ YanghoScript is a simple programming language with the ability to work with vari
 
 To get started with YanghoScript, you'll need Node.js. Download and install it from the [official Node.js website](https://nodejs.org/).
 
-Then follow these steps:
+### Install from NPM
 
-1. Clone the repository:
+You can install YanghoScript directly from NPM:
+
+```bash
+npm install -g yanghoscript
+```
+
+After installation, you can run YanghoScript using:
+
+```bash
+yanghoscript
+```
+
+### Clone from GitHub (For Contributing)
+
+If you want to contribute or explore the source code, clone the repository:
 
 ```bash
 git clone https://github.com/hoachnt/YanghoScript.git
 ```
 
-2. Install dependencies:
+Then install dependencies:
 
 ```bash
 cd YanghoScript
@@ -38,6 +52,20 @@ bun install
 ## Usage
 
 After installation, you can use YanghoScript to execute programs written in this language. Open the `code.ys` file and write your YanghoScript code in it.
+
+### Running a YanghoScript File
+
+To execute a file written in YanghoScript, use the following command:
+
+```bash
+yanghoscript <filename>
+```
+
+Example:
+
+```bash
+yanghoscript index.ys
+```
 
 ### Variable Assignment
 
@@ -102,8 +130,8 @@ greet('Hoachnt');
 
 To run a program, use the following command in the terminal:
 
-```
-bun start
+```bash
+bun dev src/code.ys
 ```
 
 Ensure that your code is written in the `code.ys` file.
@@ -115,11 +143,21 @@ YanghoScript supports the following constructs:
 -   Assignment of values to variables: `variable = value;`
 -   Arithmetic operations: `+, -, *, /`
 
+## Contributing
+
+Contributions are welcome! If you want to contribute:
+
+1. Fork the repository on GitHub.
+2. Clone it to your local machine.
+3. Create a new branch.
+4. Make changes and commit them.
+5. Submit a pull request.
+
+If you find any bugs or have suggestions for improvements, feel free to report them in the Issues section on GitHub.
+
 ## Important
 
-YanghoScript is in an early stage of development and may have some limitations and shortcomings. If you find any bugs or have suggestions for improvements, feel free to report them in the Issues section on GitHub.
-
-Don't forget that YanghoScript is a joke programming language.
+YanghoScript is in an early stage of development and may have some limitations and shortcomings. Don't forget that YanghoScript is a joke programming language.
 
 ## Contributors ✨
 
