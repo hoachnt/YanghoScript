@@ -10,10 +10,10 @@ YanghoScript is a simple programming language with the ability to work with vari
 -   Arithmetic operations
 -   Outputting results
 -   Comment out a line of code
+-   Conditional statements
 
 ### Upcoming Features (Not Really Soon):
 
--   Conditional statements(Partially implemented)
 -   Looping constructs
 -   Functions
 -   Error handling
