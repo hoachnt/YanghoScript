@@ -1,22 +1,15 @@
-#!/usr/bin/env node
+import Interpreter from "./Interpreter";
+import Lexer from "./Lexer";
+import Parser from "./Parser";
 
-import interpretCode from "./cli";
-import fs from "node:fs";
-import path from "node:path";
+export default function interpretCode(code: string) {
+  const lexer = new Lexer(code);
+  const interpreter = new Interpreter();
 
-if (!process.argv[2]) {
-	console.error("Error: You must specify a path to a file.");
-	process.exit(1);
-}
+  lexer.lexAnalysis();
 
-const filePath = process.argv[2];
-const absolutePath = path.isAbsolute(filePath)
-	? filePath
-	: path.join(process.cwd(), filePath);
+  const parser = new Parser(lexer.tokenList);
+  const rootNode = parser.parseCode();
 
-try {
-	const data = fs.readFileSync(absolutePath, "utf8");
-	interpretCode(data);
-} catch (err) {
-	console.error(err);
+  interpreter.run(rootNode);
 }
