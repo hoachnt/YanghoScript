@@ -1,18 +1,47 @@
 import BinOperationNode from "./AST/BinOperationNode";
 import ExpressionNode from "./AST/ExpressionNode";
+import FunctionCallNode from "./AST/FunctionCallNode";
+import FunctionDeclarationNode from "./AST/FunctionDeclarationNode";
 import IfNode from "./AST/IfNode";
 import NumberNode from "./AST/NumberNode";
 import StatementsNode from "./AST/StatementsNode";
 import StringNode from "./AST/StringNode";
 import UnarOperationNode from "./AST/UnarOperationNode";
 import VariableNode from "./AST/VariableNode";
+import Token from "./Token";
 import { tokenTypesList } from "./TokenType";
 
 export default class Interpreter {
 	scope: any = {};
+	functions: any = {};
 
 	// Method to execute parsed code
 	run(node: ExpressionNode): any {
+		if (node instanceof FunctionDeclarationNode) {
+			this.functions[node.name.text] = node;
+			return;
+		}
+
+		if (node instanceof FunctionCallNode) {
+			const func = this.functions[node.name.text];
+			if (!func) {
+				throw new Error(`Function '${node.name.text}' not found`);
+			}
+
+			const args = node.args.map((arg) => this.run(arg));
+			const localScope = { ...this.scope };
+
+			func.params.forEach((param: Token, index: number) => {
+				this.scope[param.text] = args[index];
+			});
+
+			const result = this.run(func.body);
+
+			this.scope = localScope;
+
+			return result;
+		}
+
 		if (node instanceof IfNode) {
 			const conditionResult = this.run(node.condition); // Evaluate condition
 			if (conditionResult) {

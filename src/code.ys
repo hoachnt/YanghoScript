@@ -29,6 +29,16 @@ NEU (2 UY TIN 1) {
     NOILIENTUC 'Default';
 }
 
+
+// Create a function
+HAM greet(name) {
+    NOILIENTUC 'Hello, ' + name;
+}
+
+// Call a function
+greet('Hoachnt');
+
+
 NOILIENTUC 'All Works!!!';
 
 // NOILIENTUC 'Hello world' - comment

@@ -8,6 +8,8 @@ import BinOperationNode from "./AST/BinOperationNode";
 import UnarOperationNode from "./AST/UnarOperationNode";
 import StringNode from "./AST/StringNode";
 import IfNode from "./AST/IfNode";
+import FunctionDeclarationNode from "./AST/FunctionDeclarationNode";
+import FunctionCallNode from "./AST/FunctionCallNode";
 
 export default class Parser {
 	tokens: Token[];
@@ -50,6 +52,11 @@ export default class Parser {
 		}
 		const variable = this.match(tokenTypesList.VARIABLE);
 		if (variable != null) {
+			// Проверка на вызов функции
+			if (this.match(tokenTypesList.LPAR) != null) {
+				this.pos -= 1;
+				return this.parseFunctionCall(variable);
+			}
 			return new VariableNode(variable);
 		}
 		const string = this.match(tokenTypesList.STRING);
@@ -128,45 +135,75 @@ export default class Parser {
 		return leftNode;
 	}
 
-	// Parse expression
+	// Parse function declaration
+	parseFunctionDeclaration(): ExpressionNode {
+		this.require(tokenTypesList.FUNCTION); // Expecting 'HAM'
+		const name = this.require(tokenTypesList.VARIABLE); // Function name
+		this.require(tokenTypesList.LPAR); // Expecting '('
+
+		const params: Token[] = [];
+		if (this.match(tokenTypesList.RPAR) == null) {
+			do {
+				params.push(this.require(tokenTypesList.VARIABLE));
+			} while (this.match(tokenTypesList.COMMA) != null);
+			this.require(tokenTypesList.RPAR); // Expecting ')'
+		}
+
+		const body = this.parseBraces() as StatementsNode; // Function body
+
+		return new FunctionDeclarationNode(name, params, body);
+	}
+
+	// Parse function call
+	parseFunctionCall(name: Token): ExpressionNode {
+		this.require(tokenTypesList.LPAR); // Expecting '('
+
+		const args: ExpressionNode[] = [];
+		if (this.match(tokenTypesList.RPAR) == null) {
+			do {
+				args.push(this.parseFormula());
+			} while (this.match(tokenTypesList.COMMA) != null);
+			this.require(tokenTypesList.RPAR); // Expecting ')'
+		}
+
+		return new FunctionCallNode(name, args);
+	}
+
+	// Parse expressions
 	parseExpression(): ExpressionNode {
-		// Parse not variable
+		const currentToken = this.tokens[this.pos];
+		if (currentToken.type.name === tokenTypesList.FUNCTION.name) {
+			return this.parseFunctionDeclaration();
+		}
+
+		// Other checks
 		if (this.match(tokenTypesList.VARIABLE) === null) {
 			if (this.match(tokenTypesList.LOG) !== null) {
-				// Minus 1 position because use match method
 				this.pos -= 1;
-
-				const printNode = this.parsePrint();
-
-				return printNode;
+				return this.parsePrint();
 			}
 			if (this.match(tokenTypesList.IF)) {
-				// Minus 1 position because use match method
 				this.pos -= 1;
-
 				return this.parseIfStatement();
 			}
 		}
 
-		// Parse variable
 		this.pos -= 1;
 		let variableNode = this.parseVariableOrDataTypes();
 		const assignOperator = this.match(tokenTypesList.ASSIGN);
 		if (assignOperator != null) {
 			const rightFormulaNode = this.parseFormula();
-			const binaryNode = new BinOperationNode(
+			return new BinOperationNode(
 				assignOperator,
 				variableNode,
 				rightFormulaNode
 			);
-			return binaryNode;
 		}
-		throw new Error(
-			`After the variable, an assignment operator is expected at position: ${this.pos}`
-		);
+
+		return variableNode;
 	}
 
-	// Parse if else
+	// Parse if-else statement
 	parseIfStatement(): ExpressionNode {
 		this.require(tokenTypesList.IF); // Expecting 'NEU'
 		const condition = this.parseFormula(); // Parsing the condition
@@ -215,11 +252,14 @@ export default class Parser {
 
 			const codeStringNode = this.parseExpression();
 
-			// Check if the parsed expression is an if statement
-			if (codeStringNode instanceof IfNode) {
+			// If the expression is an IF construct or function declaration, a semicolon is not required
+			if (
+				codeStringNode instanceof IfNode ||
+				codeStringNode instanceof FunctionDeclarationNode
+			) {
 				root.addNode(codeStringNode);
 			} else {
-				this.require(tokenTypesList.SEMICOLON); // Expecting ';'
+				this.require(tokenTypesList.SEMICOLON); // Otherwise, expect ';'
 				root.addNode(codeStringNode);
 			}
 		}
