@@ -132,7 +132,7 @@ greet('Hoachnt') IM
 Để chạy chương trình, sử dụng lệnh sau trong terminal:
 
 ```bash
-bun dev src/code.ys
+bun dev examples/code.ys
 ```
 
 Hãy đảm bảo rằng mã của bạn được viết trong file `code.ys`.
