@@ -1,167 +1,185 @@
-YanghoScript is a simple programming language with the ability to work with variables, arithmetic operations, and display results. Was built for Vietnamese gangsters😎.
+YanghoScript là một ngôn ngữ lập trình đơn giản với khả năng làm việc với biến, các phép toán số học và hiển thị kết quả. Được tạo ra dành cho các gangster Việt Nam😎.
 
-## Features
+## Tính năng
 
-### Existing Features:
+### Tính năng hiện có:
 
--   Assignment of values to variables
--   Arithmetic operations
--   Outputting results
--   Comment out a line of code
--   Conditional statements
--   Functions (Partially implemented)
+-   Gán giá trị cho biến
+-   Các phép toán số học
+-   Hiển thị kết quả
+-   Ghi chú (comment) dòng mã
+-   Câu lệnh điều kiện
+-   Hàm (Mới chỉ triển khai một phần)
 
-### Upcoming Features (Not Really Soon):
+### Tính năng sắp có (Chưa sớm đâu nha):
 
--   Looping constructs
--   Error handling
+-   Vòng lặp
+-   Xử lý lỗi
 
-## Installation
+## Cài đặt
 
-To get started with YanghoScript, you'll need Node.js. Download and install it from the [official Node.js website](https://nodejs.org/).
+Để bắt đầu với YanghoScript, bạn cần cài đặt Node.js. Tải xuống và cài đặt từ [trang web chính thức của Node.js](https://nodejs.org/).
 
-### Install from NPM
+### Cài đặt từ NPM
 
-You can install YanghoScript directly from NPM:
+Bạn có thể cài đặt YanghoScript trực tiếp từ NPM:
 
 ```bash
 npm install -g yanghoscript
 ```
 
-After installation, you can run YanghoScript using:
+Sau khi cài đặt, bạn có thể chạy YanghoScript bằng lệnh:
 
 ```bash
 yanghoscript
 ```
 
-### Clone from GitHub (For Contributing)
+### Clone từ GitHub (Dành cho người muốn đóng góp)
 
-If you want to contribute or explore the source code, clone the repository:
+Nếu bạn muốn đóng góp hoặc khám phá mã nguồn, hãy clone repository:
 
 ```bash
 git clone https://github.com/hoachnt/YanghoScript.git
 ```
 
-Then install dependencies:
+Sau đó cài đặt các dependencies:
 
 ```bash
 cd YanghoScript
 bun install
 ```
 
-## Usage
+## Cách sử dụng
 
-After installation, you can use YanghoScript to execute programs written in this language. Open the `code.ys` file and write your YanghoScript code in it.
+Sau khi cài đặt, bạn có thể sử dụng YanghoScript để chạy các chương trình được viết bằng ngôn ngữ này. Mở file `code.ys` và viết mã YanghoScript vào đó.
 
-### Running a YanghoScript File
+### Chạy một tập tin YanghoScript
 
-To execute a file written in YanghoScript, use the following command:
+Để thực thi một tập tin YanghoScript, sử dụng lệnh sau:
 
 ```bash
 yanghoscript <filename>
 ```
 
-Example:
+Ví dụ:
 
 ```bash
 yanghoscript index.ys
 ```
 
-### Variable Assignment
+### Gán biến
 
 ```javascript
-text BAYHETVAODAY 'Hoach';
-summ BAYHETVAODAY 6 CONG 5;
+text = 'Hoach' IM
+summ = 6 + 5 IM
 ```
 
-### Outputting Results
+### Hiển thị kết quả
 
 ```javascript
-NOILIENTUC text;
-NOILIENTUC summ;
+NOILIENTUC text IM
+NOILIENTUC summ IM
 ```
 
-### Arithmetic Operations
+### Phép toán số học
 
 ```javascript
-sumandmin BAYHETVAODAY summ TRU ((20 CONG 2) NHAN 2);
-NOILIENTUC sumandmin;
+sumandmin = summ - 20 + 2 * 2 IM
+NOILIENTUC sumandmin IM
+NOILIENTUC 8 + 2 * 10 IM // Kết quả mong đợi: 28
 ```
 
-### Comparisons
+### So sánh
 
 ```javascript
-NOILIENTUC 1 UY TIN 1;
-NOILIENTUC 2 NHIEU HON 1;
-NOILIENTUC 1 IT HON 2;
-NOILIENTUC 1 NHIEU BANG 1;
-NOILIENTUC 2 IT BANG 2;
+NOILIENTUC 1 UYTIN 1 IM
+NOILIENTUC 2 NHIEUHON 1 IM
+NOILIENTUC 1 ITHON 2 IM
+NOILIENTUC 1 NHIEUBANG 1 IM
+NOILIENTUC 2 ITBANG 2 IM
 ```
 
-### Conditional Statements
+### Câu lệnh điều kiện
 
 ```javascript
-NEU (2 UY TIN 1) {
-    NOILIENTUC 'Yasuo';
-} KO THI NEU (2 NHIEU HON 1) {
-    NOILIENTUC 'Kosuo';
-} KO THI {
-    NOILIENTUC 'Default';
-}
+NEU (2 UYTIN 1) ME
+    NOILIENTUC 'Yasuo' IM
+MAY KOTHI NEU (2 NHIEUHON 1) ME
+    NOILIENTUC 'Kosuo' IM
+MAY KOTHI ME
+    NOILIENTUC 'Default' IM
+MAY
 ```
 
-### Functions
+### Hàm
 
 ```javascript
-// Create a function
-HAM greet(name) {
-    NOILIENTUC 'Hello, ' CONG name;
-}
+// Tạo một hàm
+DIT greet(name) ME
+    NOILIENTUC 'Hello, ' + name IM
+MAY
 
-// Call a function
-greet('Hoachnt');
+// Gọi một hàm
+greet('Hoachnt') IM
 ```
 
-### Comments
+### Ghi chú (Comment)
 
 ```javascript
 // NOILIENTUC 'Hello world' - comment
 ```
 
-To run a program, use the following command in the terminal:
+Để chạy chương trình, sử dụng lệnh sau trong terminal:
 
 ```bash
 bun dev src/code.ys
 ```
 
-Ensure that your code is written in the `code.ys` file.
+Hãy đảm bảo rằng mã của bạn được viết trong file `code.ys`.
 
-## Code Structure
+## Cấu trúc mã
 
-YanghoScript supports the following constructs:
+YanghoScript hỗ trợ các cấu trúc sau:
 
--   Assignment of values to variables: `variable = value;`
--   Arithmetic operations: `+, -, *, /`
+-   Gán giá trị cho biến: `variable = value IM`
+-   Phép toán số học: `+, -, *, /`
 
-## Contributing
+## Từ điển từ khóa
 
-Contributions are welcome! If you want to contribute:
+| YanghoScript | Tương đương trong JavaScript |
+| ------------ | ---------------------------- |
+| `IM`         | `;` (kết thúc câu lệnh)      |
+| `NOILIENTUC` | `console.log`                |
+| `NEU`        | `if`                         |
+| `ME`         | `{`                          |
+| `MAY`        | `}`                          |
+| `KOTHI`      | `else`                       |
+| `DIT`        | `function`                   |
+| `UYTIN`      | `===`                        |
+| `NHIEUHON`   | `>`                          |
+| `ITHON`      | `<`                          |
+| `NHIEUBANG`  | `>=`                         |
+| `ITBANG`     | `<=`                         |
 
-1. Fork the repository on GitHub.
-2. Clone it to your local machine.
-3. Create a new branch.
-4. Make changes and commit them.
-5. Submit a pull request.
+## Đóng góp
 
-If you find any bugs or have suggestions for improvements, feel free to report them in the Issues section on GitHub.
+Đóng góp luôn được hoan nghênh! Nếu bạn muốn đóng góp:
 
-## Important
+1. Fork repository trên GitHub.
+2. Clone về máy của bạn.
+3. Tạo một nhánh mới.
+4. Thực hiện thay đổi và commit.
+5. Gửi pull request.
 
-YanghoScript is in an early stage of development and may have some limitations and shortcomings. Don't forget that YanghoScript is a joke programming language.
+Nếu bạn phát hiện lỗi hoặc có đề xuất cải tiến, hãy báo cáo trong phần Issues trên GitHub.
 
-## Contributors ✨
+## Quan trọng
 
-Thanks goes to these wonderful people:
+YanghoScript đang ở giai đoạn phát triển ban đầu và có thể có một số hạn chế. Đừng quên rằng YanghoScript là một ngôn ngữ lập trình mang tính giải trí.
+
+## Những người đóng góp ✨
+
+Cảm ơn những người tuyệt vời sau đây:
 
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
 <!-- prettier-ignore-start -->
@@ -179,4 +197,4 @@ Thanks goes to these wonderful people:
 
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 
-This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind welcome!
+Dự án này tuân theo [all-contributors](https://github.com/all-contributors/all-contributors). Mọi đóng góp đều được hoan nghênh!
