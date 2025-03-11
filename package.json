@@ -20,7 +20,7 @@
 		"scripting"
 	],
 	"author": "Hoachnt",
-	"license": "ISC",
+	"license": "MIT",
 	"files": [
 		"build/"
 	],
