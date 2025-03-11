@@ -4,7 +4,8 @@ summ BAYHETVAODAY 6 CONG 5;
 NOILIENTUC text;
 NOILIENTUC summ;
 
-sumandmin BAYHETVAODAY summ TRU ((20 CONG 2) NHAN 2);
+sumandmin BAYHETVAODAY summ TRU 20 CONG 2 NHAN 2;
+NOILIENTUC 8 CONG 2 NHAN 10; // Must be 28, but I get 100
 
 NOILIENTUC sumandmin;
 NOILIENTUC 'Chao ca lo nha minh nha';

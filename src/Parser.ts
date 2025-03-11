@@ -103,14 +103,44 @@ export default class Parser {
 		}
 	}
 
-	// Parse formula
-	parseFormula(): ExpressionNode {
-		let leftNode = this.parseParentheses();
+	// New helper: parses parenthesized expressions or basic data types
+	parsePrimary(): ExpressionNode {
+		if (this.match(tokenTypesList.LPAR) != null) {
+			const node = this.parseFormula(); // later levels handle operations
+			this.require(tokenTypesList.RPAR);
+			return node;
+		}
+		return this.parseVariableOrDataTypes();
+	}
+
+	// New helper: handles multiplication and division operators
+	parseMultiplicative(): ExpressionNode {
+		let node = this.parsePrimary();
+		let operator = this.match(tokenTypesList.MULT, tokenTypesList.DIV);
+		while (operator != null) {
+			const rightNode = this.parsePrimary();
+			node = new BinOperationNode(operator, node, rightNode);
+			operator = this.match(tokenTypesList.MULT, tokenTypesList.DIV);
+		}
+		return node;
+	}
+
+	// New helper: handles addition and subtraction operators
+	parseAdditive(): ExpressionNode {
+		let node = this.parseMultiplicative();
+		let operator = this.match(tokenTypesList.PLUS, tokenTypesList.MINUS);
+		while (operator != null) {
+			const rightNode = this.parseMultiplicative();
+			node = new BinOperationNode(operator, node, rightNode);
+			operator = this.match(tokenTypesList.PLUS, tokenTypesList.MINUS);
+		}
+		return node;
+	}
+
+	// New helper: handles comparisons (=, <, >, etc.)
+	parseComparison(): ExpressionNode {
+		let node = this.parseAdditive();
 		let operator = this.match(
-			tokenTypesList.MINUS,
-			tokenTypesList.PLUS,
-			tokenTypesList.MULT,
-			tokenTypesList.DIV,
 			tokenTypesList.EQUAL,
 			tokenTypesList.LESS,
 			tokenTypesList.MORE,
@@ -118,13 +148,9 @@ export default class Parser {
 			tokenTypesList.MOREQ
 		);
 		while (operator != null) {
-			let rightNode = this.parseParentheses();
-			leftNode = new BinOperationNode(operator, leftNode, rightNode);
+			const rightNode = this.parseAdditive();
+			node = new BinOperationNode(operator, node, rightNode);
 			operator = this.match(
-				tokenTypesList.MINUS,
-				tokenTypesList.PLUS,
-				tokenTypesList.MULT,
-				tokenTypesList.DIV,
 				tokenTypesList.EQUAL,
 				tokenTypesList.LESS,
 				tokenTypesList.MORE,
@@ -132,7 +158,12 @@ export default class Parser {
 				tokenTypesList.MOREQ
 			);
 		}
-		return leftNode;
+		return node;
+	}
+
+	// Update parseFormula() to start with comparisons (the top arithmetic level)
+	parseFormula(): ExpressionNode {
+		return this.parseComparison();
 	}
 
 	// Parse function declaration
