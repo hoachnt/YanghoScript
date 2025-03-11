@@ -11,10 +11,10 @@ YanghoScript is a simple programming language with the ability to work with vari
 -   Outputting results
 -   Comment out a line of code
 -   Conditional statements
+-   Looping constructs(Partially implemented)
 
 ### Upcoming Features (Not Really Soon):
 
--   Looping constructs
 -   Functions
 -   Error handling
 
@@ -74,6 +74,14 @@ NEU (2 UY TIN 1) {
 } KO THI {
     NOILIENTUC 'Default';
 }
+
+// Create a function
+HAM greet(name) {
+    NOILIENTUC 'Hello, ' + name;
+}
+
+// Call a function
+greet('Hoachnt');
 
 NOILIENTUC 'All Works!!!';
 
