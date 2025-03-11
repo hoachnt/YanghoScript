@@ -9,7 +9,6 @@ import StatementsNode from "./AST/StatementsNode";
 import StringNode from "./AST/StringNode";
 import UnarOperationNode from "./AST/UnarOperationNode";
 import VariableNode from "./AST/VariableNode";
-import Token from "./Token";
 import { tokenTypesList } from "./TokenType";
 
 // Define an immutable environment interface.

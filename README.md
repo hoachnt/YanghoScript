@@ -121,6 +121,13 @@ MAY
 
 // Gọi một hàm
 greet('Hoachnt') IM
+
+
+DIT cong(a, b) ME
+    TRA a + b IM
+MAY
+
+NOILIENTUC cong(1, 2) IM // Kết quả mong muốn: 3
 ```
 
 ### Ghi chú (Comment)
@@ -148,6 +155,7 @@ YanghoScript hỗ trợ các cấu trúc sau:
 
 | YanghoScript | Tương đương trong JavaScript |
 | ------------ | ---------------------------- |
+| `TRA`        | `return`                     |
 | `IM`         | `;` (kết thúc câu lệnh)      |
 | `NOILIENTUC` | `console.log`                |
 | `NEU`        | `if`                         |
