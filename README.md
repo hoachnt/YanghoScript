@@ -45,12 +45,12 @@ Example code:
 
 ```javascript
 text BAYHETVAODAY 'Hoach';
-summ BAYHETVAODAY 6 + 5;
+summ BAYHETVAODAY 6 CONG 5;
 
 NOILIENTUC text;
 NOILIENTUC summ;
 
-sumandmin BAYHETVAODAY summ - ((20 + 2) * 2);
+sumandmin BAYHETVAODAY summ TRU ((20 CONG 2) NHAN 2);
 
 NOILIENTUC sumandmin;
 NOILIENTUC 'Chao ca lo nha minh nha';
@@ -75,9 +75,10 @@ NEU (2 UY TIN 1) {
     NOILIENTUC 'Default';
 }
 
+
 // Create a function
 HAM greet(name) {
-    NOILIENTUC 'Hello, ' + name;
+    NOILIENTUC 'Hello, ' CONG name;
 }
 
 // Call a function
@@ -108,9 +109,9 @@ YanghoScript supports the following constructs:
 Examples of correct expressions:
 
 ```javascript
-1 + 2 * 3; // Result: 9(incorrect)
-1 + (2 * 3); // Result: 7(correct)
-10 / (2 + 3); // Result: 2(correct)
+1 CONG 2 NHAN 3; // Result: 9(incorrect)
+1 CONG (2 NHAN 3); // Result: 7(correct)
+10 CHIA (2 CONG 3); // Result: 2(correct)
 ```
 
 Using parentheses ensures the correct order of operations and prevents errors in calculations.
