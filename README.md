@@ -114,17 +114,6 @@ YanghoScript supports the following constructs:
 
 -   Assignment of values to variables: `variable = value;`
 -   Arithmetic operations: `+, -, *, /`
--   Use parentheses for correct order of arithmetic operations.
-
-Examples of correct expressions:
-
-```javascript
-1 CONG 2 NHAN 3; // Result: 9(incorrect)
-1 CONG (2 NHAN 3); // Result: 7(correct)
-10 CHIA (2 CONG 3); // Result: 2(correct)
-```
-
-Using parentheses ensures the correct order of operations and prevents errors in calculations.
 
 ## Important
 
