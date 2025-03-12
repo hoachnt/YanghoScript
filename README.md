@@ -1,4 +1,4 @@
-YanghoScript là một ngôn ngữ lập trình đơn giản với khả năng làm việc với biến, các phép toán số học và hiển thị kết quả. Được tạo ra dành cho các gangster Việt Nam😎.
+YanghoScript là một ngôn ngữ lập trình đơn giản với khả năng làm việc với biến, các phép toán số học và hiển thị kết quả. Được tạo ra dành cho các yangho Việt Nam😎.
 
 ## Tính năng
 
