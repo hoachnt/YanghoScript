@@ -168,6 +168,10 @@ YanghoScript hỗ trợ các cấu trúc sau:
 -   Gán giá trị cho biến: `variable = value IM`
 -   Phép toán số học: `+, -, *, /`
 
+### Hỗ trợ VSCode
+
+Bạn có thể tải xuống plugin **YanghoScript** từ **VSCode Extensions** để có tính năng đánh dấu cú pháp và hỗ trợ lập trình tốt hơn.
+
 ## Từ điển từ khóa
 
 | YanghoScript | Tương đương trong JavaScript |
