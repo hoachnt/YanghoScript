@@ -1,0 +1,9 @@
+THE factorial (n) ME
+    NEU (n ITHON 1) ME
+        TRA 1 IM
+    MAY KOTHI ME
+        TRA n * factorial(n - 1) IM
+    MAY
+MAY
+
+NOILIENTUC factorial(5) IM

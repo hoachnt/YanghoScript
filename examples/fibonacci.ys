@@ -1,0 +1,9 @@
+THE fib(n) ME
+    NEU (n ITHON 1) ME
+        TRA 1 IM
+    MAY KOTHI ME
+        TRA fib(n - 1) + fib(n - 2) IM
+    MAY
+MAY
+
+NOILIENTUC fib(10) IM
