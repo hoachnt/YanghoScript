@@ -115,7 +115,7 @@ MAY
 
 ```javascript
 // Tạo một hàm
-DIT greet(name) ME
+THE greet(name) ME
     NOILIENTUC 'Hello, ' + name IM
 MAY
 
@@ -123,7 +123,7 @@ MAY
 greet('Hoachnt') IM
 
 
-DIT cong(a, b) ME
+THE cong(a, b) ME
     TRA a + b IM
 MAY
 
@@ -133,7 +133,7 @@ NOILIENTUC cong(1, 2) IM // Kết quả mong muốn: 3
 // Đệ quy
 number = 5 IM
 
-DIT recursion(n) ME
+THE recursion(n) ME
     NEU (n ITHON 1) ME
         TRA 1 IM
     MAY KOTHI ME
@@ -183,7 +183,7 @@ Bạn có thể tải xuống plugin **YanghoScript** từ **VSCode Extensions**
 | `ME`         | `{`                          |
 | `MAY`        | `}`                          |
 | `KOTHI`      | `else`                       |
-| `DIT`        | `function`                   |
+| `THE`        | `function`                   |
 | `UYTIN`      | `===`                        |
 | `NHIEUHON`   | `>`                          |
 | `ITHON`      | `<`                          |

@@ -32,11 +32,11 @@ MAY
 
 
 // Create a function
-DIT greet(name) ME
+THE greet(name) ME
     NOILIENTUC 'Hello, ' + name IM
 MAY
 
-DIT cong(a, b) ME
+THE cong(a, b) ME
     TRA a + b IM
 MAY
 
@@ -49,7 +49,7 @@ NOILIENTUC cong(1, 2) IM
 
 number = 5 IM
 
-DIT recursion(n) ME
+THE recursion(n) ME
     NEU (n ITHON 1) ME
         TRA 1 IM
     MAY KOTHI ME

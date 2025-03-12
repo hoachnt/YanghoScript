@@ -32,7 +32,7 @@ export const tokenTypesList = {
 	ELSE: new TokenType("ELSE", "KOTHI"),
 	STRING: new TokenType("STRING", "'.+'"),
 	SINGLE_LINE_COMMENT: { name: "SINGLE_LINE_COMMENT", regex: "//.*" },
-	FUNCTION: new TokenType("FUNCTION", "DIT"),
+	FUNCTION: new TokenType("FUNCTION", "THE"),
 	RETURN: new TokenType("RETURN", "TRA"),
 	COMMA: new TokenType("COMMA", ","),
 };
