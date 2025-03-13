@@ -1,13 +1,15 @@
-import TokenType from "./TokenType";
+import { TokenType } from "./TokenType";
 
-export default class Token {
-  type: TokenType;
-  text: string;
-  pos: number;
+// Описание неизменяемого токена
+export type Token = Readonly<{
+	type: TokenType;
+	text: string;
+	pos: number;
+}>;
 
-  constructor(type: TokenType, text: string, pos: number) {
-    this.type = type;
-    this.text = text;
-    this.pos = pos;
-  }
-}
+// Фабричная функция для создания токена (FP)
+export const createToken = (
+	type: TokenType,
+	text: string,
+	pos: number
+): Token => ({ type, text, pos });

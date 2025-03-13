@@ -9,7 +9,7 @@ import StatementsNode from "./AST/StatementsNode";
 import StringNode from "./AST/StringNode";
 import UnarOperationNode from "./AST/UnarOperationNode";
 import VariableNode from "./AST/VariableNode";
-import { tokenTypesList } from "./TokenType";
+import { TokenNames, getTokenType } from "./TokenType";
 
 // Define an immutable environment interface.
 export interface Environment {
@@ -99,7 +99,7 @@ function evaluate(node: ExpressionNode, env: Environment): EvalResult {
 
 	// Unary operation.
 	if (node instanceof UnarOperationNode) {
-		if (node.operator.type.name === tokenTypesList.LOG.name) {
+		if (node.operator.type.name === getTokenType(TokenNames.LOG).name) {
 			const operandRes = evaluate(node.operand, env);
 			console.log(operandRes.value);
 			return { value: undefined, env: operandRes.env };
@@ -109,52 +109,52 @@ function evaluate(node: ExpressionNode, env: Environment): EvalResult {
 	// Binary operations.
 	if (node instanceof BinOperationNode) {
 		switch (node.operator.type.name) {
-			case tokenTypesList.PLUS.name: {
+			case getTokenType(TokenNames.PLUS).name: {
 				const left = evaluate(node.leftNode, env);
 				const right = evaluate(node.rightNode, left.env);
 				return { value: left.value + right.value, env: right.env };
 			}
-			case tokenTypesList.MINUS.name: {
+			case getTokenType(TokenNames.MINUS).name: {
 				const left = evaluate(node.leftNode, env);
 				const right = evaluate(node.rightNode, left.env);
 				return { value: left.value - right.value, env: right.env };
 			}
-			case tokenTypesList.MULT.name: {
+			case getTokenType(TokenNames.MULT).name: {
 				const left = evaluate(node.leftNode, env);
 				const right = evaluate(node.rightNode, left.env);
 				return { value: left.value * right.value, env: right.env };
 			}
-			case tokenTypesList.DIV.name: {
+			case getTokenType(TokenNames.DIV).name: {
 				const left = evaluate(node.leftNode, env);
 				const right = evaluate(node.rightNode, left.env);
 				return { value: left.value / right.value, env: right.env };
 			}
-			case tokenTypesList.EQUAL.name: {
+			case getTokenType(TokenNames.EQUAL).name: {
 				const left = evaluate(node.leftNode, env);
 				const right = evaluate(node.rightNode, left.env);
 				return { value: left.value == right.value, env: right.env };
 			}
-			case tokenTypesList.LESS.name: {
+			case getTokenType(TokenNames.LESS).name: {
 				const left = evaluate(node.leftNode, env);
 				const right = evaluate(node.rightNode, left.env);
 				return { value: left.value < right.value, env: right.env };
 			}
-			case tokenTypesList.MORE.name: {
+			case getTokenType(TokenNames.MORE).name: {
 				const left = evaluate(node.leftNode, env);
 				const right = evaluate(node.rightNode, left.env);
 				return { value: left.value > right.value, env: right.env };
 			}
-			case tokenTypesList.LESSEQ.name: {
+			case getTokenType(TokenNames.LESSEQ).name: {
 				const left = evaluate(node.leftNode, env);
 				const right = evaluate(node.rightNode, left.env);
 				return { value: left.value <= right.value, env: right.env };
 			}
-			case tokenTypesList.MOREQ.name: {
+			case getTokenType(TokenNames.MOREQ).name: {
 				const left = evaluate(node.leftNode, env);
 				const right = evaluate(node.rightNode, left.env);
 				return { value: left.value >= right.value, env: right.env };
 			}
-			case tokenTypesList.ASSIGN.name: {
+			case getTokenType(TokenNames.ASSIGN).name: {
 				const rightRes = evaluate(node.rightNode, env);
 				if (!(node.leftNode instanceof VariableNode)) {
 					throw new Error(

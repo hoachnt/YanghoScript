@@ -1,9 +1,9 @@
-import Token from "../Token";
+import { Token } from "../Token";
 
 export default class NumberNode {
-  number: Token;
+	number: Token;
 
-  constructor(number: Token) {
-    this.number = number;
-  }
+	constructor(number: Token) {
+		this.number = number;
+	}
 }

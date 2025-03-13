@@ -1,9 +1,9 @@
-import Token from "../Token";
+import { Token } from "../Token";
 
 export default class StringNode {
-  string: Token;
+	string: Token;
 
-  constructor(string: Token) {
-    this.string = string;
-  }
+	constructor(string: Token) {
+		this.string = string;
+	}
 }
