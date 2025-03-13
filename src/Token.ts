@@ -1,13 +1,13 @@
 import { TokenType } from "./TokenType";
 
-// Описание неизменяемого токена
+// Immutable token description
 export type Token = Readonly<{
 	type: TokenType;
 	text: string;
 	pos: number;
 }>;
 
-// Фабричная функция для создания токена (FP)
+// Factory function for creating a token (FP)
 export const createToken = (
 	type: TokenType,
 	text: string,

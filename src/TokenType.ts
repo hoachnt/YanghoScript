@@ -1,16 +1,16 @@
-// Используем type вместо класса для неизменяемости (принципы FP)
+// Using type instead of class for immutability (FP principles)
 export type TokenType = Readonly<{
 	name: string;
 	regex: string;
 }>;
 
-// Фабрика для создания токенов, обеспечивая чистоту функций (FP)
+// Factory function for creating tokens, ensuring function purity (FP)
 const createTokenType = (name: string, regex: string): TokenType => ({
 	name,
 	regex,
 });
 
-// Используем enum для именования токенов, что делает код более безопасным и удобным
+// Using enum for token naming, making the code safer and more convenient
 export enum TokenNames {
 	NUMBER = "NUMBER",
 	VARIABLE = "VARIABLE",
@@ -40,7 +40,7 @@ export enum TokenNames {
 	COMMA = "COMMA",
 }
 
-// Неизменяемая карта токенов, соблюдая принципы SOLID (отделяем данные от логики)
+// Immutable token map, adhering to SOLID principles (separating data from logic)
 export const tokenTypesMap: Readonly<Record<TokenNames, TokenType>> = {
 	[TokenNames.NUMBER]: createTokenType(TokenNames.NUMBER, "[0-9]+"),
 	[TokenNames.VARIABLE]: createTokenType(TokenNames.VARIABLE, "[a-z]+"),
@@ -73,10 +73,10 @@ export const tokenTypesMap: Readonly<Record<TokenNames, TokenType>> = {
 	[TokenNames.COMMA]: createTokenType(TokenNames.COMMA, ","),
 };
 
-// Возвращаем массив токенов, если нужно итерироваться по ним
+// Returns an array of tokens for iteration if needed
 export const tokenTypesList = Object.values(tokenTypesMap);
 
-// Функция для получения токена по имени
+// Function to retrieve a token by name with autocomplete
 export const getTokenType = <T extends keyof typeof tokenTypesMap>(
 	name: T
 ): TokenType => tokenTypesMap[name];
