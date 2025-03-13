@@ -1,20 +1,33 @@
-import { createToken, Token } from "./Token";
-import { getTokenType, TokenNames, tokenTypesList } from "./TokenType";
+import { useTokenType } from "./tokens";
+import { Token, useToken } from "./tokens";
 
 export default class Lexer {
 	code: string;
 	pos: number = 0;
 	tokenList: Token[] = [];
+	private createToken;
+	private getTokenType;
+	private TokenNames;
+	private tokenTypesList;
 
 	constructor(code: string) {
+		const { createToken } = useToken();
+		const { getTokenType, TokenNames, tokenTypesList } = useTokenType();
+
 		this.code = code;
+		this.createToken = createToken;
+		this.getTokenType = getTokenType;
+		this.TokenNames = TokenNames;
+		this.tokenTypesList = tokenTypesList;
 	}
 
 	lexAnalysis(): Token[] {
 		while (this.nextToken()) {}
 
 		this.tokenList = this.tokenList.filter(
-			(token) => token.type.name !== getTokenType(TokenNames.SPACE).name
+			(token) =>
+				token.type.name !==
+				this.getTokenType(this.TokenNames.SPACE).name
 		);
 
 		return this.tokenList;
@@ -41,7 +54,7 @@ export default class Lexer {
 			return true;
 		}
 
-		const tokenTypesValues = Object.values(tokenTypesList);
+		const tokenTypesValues = Object.values(this.tokenTypesList);
 
 		for (let i = 0; i < tokenTypesValues.length; i++) {
 			const tokenType = tokenTypesValues[i];
@@ -49,7 +62,7 @@ export default class Lexer {
 			const result = this.code.substr(this.pos).match(regex);
 
 			if (result && result[0]) {
-				const token = createToken(tokenType, result[0], this.pos);
+				const token = this.createToken(tokenType, result[0], this.pos);
 
 				this.pos += result[0].length;
 				this.tokenList.push(token);
