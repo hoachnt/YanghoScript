@@ -1,6 +1,6 @@
 {
 	"name": "yanghoscript",
-	"version": "3.1.0",
+	"version": "3.1.1",
 	"description": "YanghoScript is a lightweight programming language for scripting and automation.",
 	"main": "build/index.js",
 	"types": "build/index.d.ts",
