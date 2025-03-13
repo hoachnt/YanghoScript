@@ -1,10 +1,10 @@
-// Используем type вместо class для иммутабельности (FP)
+// Use `type` instead of `class` for immutability (FP)
 export type TokenType = Readonly<{
 	name: string;
 	regex: string;
 }>;
 
-// Фабрика для создания токенов, гарантируя чистоту функций (FP)
+// Factory for creating tokens, ensuring function purity (FP)
 const createTokenType = <T extends TokenNames>(
 	name: T,
 	regex: string
@@ -13,7 +13,7 @@ const createTokenType = <T extends TokenNames>(
 	regex,
 });
 
-// Enum для именования токенов (повышает безопасность кода)
+// Enum for token naming (enhances code safety)
 enum TokenNames {
 	NUMBER = "NUMBER",
 	VARIABLE = "VARIABLE",
@@ -43,7 +43,7 @@ enum TokenNames {
 	COMMA = "COMMA",
 }
 
-// Определения токенов вынесены отдельно для удобства редактирования и расширяемости
+// Token definitions are extracted separately for easier editing and extendability
 const tokenDefinitions: Record<TokenNames, string> = {
 	[TokenNames.NUMBER]: "[0-9]+",
 	[TokenNames.VARIABLE]: "[a-z]+",
@@ -73,7 +73,7 @@ const tokenDefinitions: Record<TokenNames, string> = {
 	[TokenNames.COMMA]: ",",
 };
 
-// Автоматически создаем маппинг токенов, избегая дублирования кода
+// Automatically create a token mapping, avoiding code duplication
 const tokenTypesMap = Object.freeze(
 	Object.fromEntries(
 		Object.entries(tokenDefinitions).map(([name, regex]) => [
@@ -83,12 +83,12 @@ const tokenTypesMap = Object.freeze(
 	) as Record<TokenNames, TokenType>
 );
 
-// Список токенов для итерации
+// List of tokens for iteration
 const tokenTypesList = Object.freeze(Object.values(tokenTypesMap));
 
 const getTokenType = (name: TokenNames): TokenType => tokenTypesMap[name];
 
-// Экспортируем объект с функциями для работы с токенами
+// Export an object with functions for working with tokens
 export const useTokenType = () => ({
 	getTokenType,
 	tokenTypesList,
