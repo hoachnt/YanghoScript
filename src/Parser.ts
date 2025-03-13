@@ -15,9 +15,32 @@ import ReturnNode from "./AST/ReturnNode";
 export default class Parser {
 	tokens: Token[];
 	pos: number = 0;
+	source: string; // <-- add source to hold code text
 
-	constructor(tokens: Token[]) {
+	constructor(tokens: Token[], source: string) {
+		// <-- update constructor signature
 		this.tokens = tokens;
+		this.source = source;
+	}
+
+	// New helper to compute error details with column info
+	private getErrorDetails(pos: number): string {
+		// Adjust pos by subtracting one to correctly report the line
+		const adjustedPos = pos > 0 ? pos - 1 : pos;
+		const lines = this.source.split("\n");
+		let currentPos = 0;
+		for (let i = 0; i < lines.length; i++) {
+			const line = lines[i];
+			if (currentPos + line.length >= adjustedPos) {
+				const column = adjustedPos - currentPos;
+				return (
+					`Line ${i + 1}, Column ${column}: ${line}\n` +
+					`${" ".repeat(column)}^`
+				);
+			}
+			currentPos += line.length + 1; // include newline
+		}
+		return "Unknown location";
 	}
 
 	// Method to match tokens
@@ -32,14 +55,18 @@ export default class Parser {
 		return null;
 	}
 
-	// Method to require tokens
+	// Updated require() that shows error details including the token that came before the failure.
 	require(...expected: TokenType[]): Token {
 		const token = this.match(...expected);
 		if (!token) {
+			const tokenPos = this.tokens[this.pos]?.pos || 0;
+			const errorDetails = this.getErrorDetails(tokenPos);
+			// If possible, show the text of the previous token
+			const prevText = this.pos > 0 ? this.tokens[this.pos - 1].text : "";
 			throw new Error(
-				`Expected ${expected
+				`Syntax Error at ${errorDetails} - Expected ${expected
 					.map((t) => t.name)
-					.join(" or ")} at position: ${this.pos}`
+					.join(" or ")} after '${prevText}'.`
 			);
 		}
 		return token;

@@ -3,13 +3,13 @@ import Lexer from "./Lexer";
 import Parser from "./Parser";
 
 export default function interpretCode(code: string) {
-  const lexer = new Lexer(code);
-  const interpreter = new Interpreter();
+	const lexer = new Lexer(code);
+	const interpreter = new Interpreter();
 
-  lexer.lexAnalysis();
+	lexer.lexAnalysis();
 
-  const parser = new Parser(lexer.tokenList);
-  const rootNode = parser.parseCode();
+	const parser = new Parser(lexer.tokenList, code);
+	const rootNode = parser.parseCode();
 
-  interpreter.run(rootNode);
+	interpreter.run(rootNode);
 }
