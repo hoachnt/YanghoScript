@@ -1,4 +1,4 @@
-import { Token } from "../Token";
+import { Token } from "../tokens";
 
 export default class NumberNode {
 	number: Token;

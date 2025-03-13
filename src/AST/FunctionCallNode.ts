@@ -1,5 +1,5 @@
 import ExpressionNode from "./ExpressionNode";
-import { Token } from "../Token";
+import { Token } from "../tokens";
 
 export default class FunctionCallNode extends ExpressionNode {
 	name: Token;
