@@ -1,5 +1,5 @@
+import { Token } from "../tokens";
 import ExpressionNode from "./ExpressionNode";
-import { Token } from "../Token";
 
 export default class BinOperationNode extends ExpressionNode {
 	operator: Token;

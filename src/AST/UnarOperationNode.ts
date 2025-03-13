@@ -1,4 +1,4 @@
-import { Token } from "../Token";
+import { Token } from "../tokens";
 import ExpressionNode from "./ExpressionNode";
 
 export default class UnarOperationNode {
