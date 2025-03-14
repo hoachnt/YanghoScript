@@ -10,6 +10,7 @@ YanghoScript - đây là một ngôn ngữ lập trình đơn giản, hỗ trợ
 -   Các phép toán số học
 -   Hiển thị kết quả
 -   Ghi chú (comment) dòng mã
+-   Ghi chú nhiều dòng (multiline comments) ✅
 -   Câu lệnh điều kiện
 -   Hàm (Mới chỉ triển khai một phần)
 
@@ -104,6 +105,18 @@ THE greet(name) ME
 MAY
 
 greet('Hoachnt') IM
+```
+
+### 📝 Ghi chú nhiều dòng (Multiline Comments)
+
+Bạn có thể sử dụng comment nhiều dòng để ghi chú mã nguồn như sau:
+
+```javascript
+/*
+Đây là một comment nhiều dòng.
+Dùng để chú thích các đoạn code dài.
+*/
+NOILIENTUC 'Hello World' IM
 ```
 
 ## 📖 Từ điển từ khóa
