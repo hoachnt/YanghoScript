@@ -1,20 +1,11 @@
 // Use `type` instead of `class` for immutability (FP)
 export type TokenType = Readonly<{
-	name: string;
+	name: TokenNames;
 	regex: string;
 }>;
 
-// Factory for creating tokens, ensuring function purity (FP)
-const createTokenType = <T extends TokenNames>(
-	name: T,
-	regex: string
-): TokenType => ({
-	name,
-	regex,
-});
-
 // Enum for token naming (enhances code safety)
-enum TokenNames {
+export enum TokenNames {
 	NUMBER = "NUMBER",
 	VARIABLE = "VARIABLE",
 	SEMICOLON = "SEMICOLON",
@@ -42,6 +33,15 @@ enum TokenNames {
 	RETURN = "RETURN",
 	COMMA = "COMMA",
 }
+
+// Factory for creating tokens, ensuring function purity (FP)
+const createTokenType = <T extends TokenNames>(
+	name: T,
+	regex: string
+): TokenType => ({
+	name,
+	regex,
+});
 
 // Token definitions are extracted separately for easier editing and extendability
 const tokenDefinitions: Record<TokenNames, string> = {
@@ -71,13 +71,13 @@ const tokenDefinitions: Record<TokenNames, string> = {
 	[TokenNames.FUNCTION]: "THE",
 	[TokenNames.RETURN]: "TRA",
 	[TokenNames.COMMA]: ",",
-};
+} as const;
 
 // Automatically create a token mapping, avoiding code duplication
 const tokenTypesMap = Object.freeze(
 	Object.fromEntries(
 		Object.entries(tokenDefinitions).map(([name, regex]) => [
-			name,
+			name as TokenNames,
 			createTokenType(name as TokenNames, regex),
 		])
 	) as Record<TokenNames, TokenType>
@@ -92,6 +92,5 @@ const getTokenType = (name: TokenNames): TokenType => tokenTypesMap[name];
 export const useTokenType = () => ({
 	getTokenType,
 	tokenTypesList,
-	TokenNames,
 	tokenTypesMap,
 });

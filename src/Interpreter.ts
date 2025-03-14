@@ -9,7 +9,7 @@ import StatementsNode from "./AST/StatementsNode";
 import StringNode from "./AST/StringNode";
 import UnarOperationNode from "./AST/UnarOperationNode";
 import VariableNode from "./AST/VariableNode";
-import { useTokenType } from "./tokens";
+import { TokenNames, useTokenType } from "./tokens";
 
 // Define an immutable environment interface.
 export interface Environment {
@@ -28,7 +28,7 @@ class ReturnException {
 }
 
 function evaluate(node: ExpressionNode, env: Environment): EvalResult {
-	const { getTokenType, TokenNames } = useTokenType();
+	const { getTokenType } = useTokenType();
 
 	if (node instanceof ReturnNode) {
 		const result = evaluate(node.expression, env);

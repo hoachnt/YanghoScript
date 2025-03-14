@@ -1,5 +1,5 @@
 import { Token } from "./tokens";
-import { TokenType, useTokenType } from "./tokens/TokenType";
+import { TokenNames, TokenType, useTokenType } from "./tokens/TokenType";
 import ExpressionNode from "./AST/ExpressionNode";
 import StatementsNode from "./AST/StatementsNode";
 import NumberNode from "./AST/NumberNode";
@@ -17,16 +17,14 @@ export default class Parser {
 	pos: number = 0;
 	source: string; // <-- add source to hold code text
 	private getTokenType;
-	private TokenNames;
 
 	constructor(tokens: Token[], source: string) {
-		const { getTokenType, TokenNames, tokenTypesList } = useTokenType();
+		const { getTokenType } = useTokenType();
 
 		// <-- update constructor signature
 		this.tokens = tokens;
 		this.source = source;
 		this.getTokenType = getTokenType;
-		this.TokenNames = TokenNames;
 	}
 
 	// New helper to compute error details with column info
@@ -80,22 +78,20 @@ export default class Parser {
 
 	// Parse variable or data types
 	parseVariableOrDataTypes(): ExpressionNode {
-		const number = this.match(this.getTokenType(this.TokenNames.NUMBER));
+		const number = this.match(this.getTokenType(TokenNames.NUMBER));
 		if (number != null) {
 			return new NumberNode(number);
 		}
-		const variable = this.match(
-			this.getTokenType(this.TokenNames.VARIABLE)
-		);
+		const variable = this.match(this.getTokenType(TokenNames.VARIABLE));
 		if (variable != null) {
 			// Проверка на вызов функции
-			if (this.match(this.getTokenType(this.TokenNames.LPAR)) != null) {
+			if (this.match(this.getTokenType(TokenNames.LPAR)) != null) {
 				this.pos -= 1;
 				return this.parseFunctionCall(variable);
 			}
 			return new VariableNode(variable);
 		}
-		const string = this.match(this.getTokenType(this.TokenNames.STRING));
+		const string = this.match(this.getTokenType(TokenNames.STRING));
 		if (string != null) {
 			return new StringNode(string);
 		}
@@ -106,7 +102,7 @@ export default class Parser {
 
 	// Parse print statement
 	parsePrint(): ExpressionNode {
-		const operatorLog = this.match(this.getTokenType(this.TokenNames.LOG));
+		const operatorLog = this.match(this.getTokenType(TokenNames.LOG));
 		if (operatorLog != null) {
 			return new UnarOperationNode(operatorLog, this.parseFormula());
 		}
@@ -115,9 +111,9 @@ export default class Parser {
 
 	// Parse parentheses
 	parseParentheses(): ExpressionNode {
-		if (this.match(this.getTokenType(this.TokenNames.LPAR)) != null) {
+		if (this.match(this.getTokenType(TokenNames.LPAR)) != null) {
 			const node = this.parseFormula();
-			this.require(this.getTokenType(this.TokenNames.RPAR));
+			this.require(this.getTokenType(TokenNames.RPAR));
 
 			return node;
 		} else {
@@ -127,12 +123,12 @@ export default class Parser {
 
 	// Parse braces
 	parseBraces(): ExpressionNode {
-		if (this.match(this.getTokenType(this.TokenNames.LBRACE)) != null) {
+		if (this.match(this.getTokenType(TokenNames.LBRACE)) != null) {
 			const node = this.parseContext();
 
 			this.pos -= 1;
 
-			this.require(this.getTokenType(this.TokenNames.RBRACE));
+			this.require(this.getTokenType(TokenNames.RBRACE));
 			return node;
 		} else {
 			throw new Error(`Expecting { at position: ${this.pos}`);
@@ -141,9 +137,9 @@ export default class Parser {
 
 	// New helper: parses parenthesized expressions or basic data types
 	parsePrimary(): ExpressionNode {
-		if (this.match(this.getTokenType(this.TokenNames.LPAR)) != null) {
+		if (this.match(this.getTokenType(TokenNames.LPAR)) != null) {
 			const node = this.parseFormula(); // later levels handle operations
-			this.require(this.getTokenType(this.TokenNames.RPAR));
+			this.require(this.getTokenType(TokenNames.RPAR));
 			return node;
 		}
 		return this.parseVariableOrDataTypes();
@@ -153,15 +149,15 @@ export default class Parser {
 	parseMultiplicative(): ExpressionNode {
 		let node = this.parsePrimary();
 		let operator = this.match(
-			this.getTokenType(this.TokenNames.MULT),
-			this.getTokenType(this.TokenNames.DIV)
+			this.getTokenType(TokenNames.MULT),
+			this.getTokenType(TokenNames.DIV)
 		);
 		while (operator != null) {
 			const rightNode = this.parsePrimary();
 			node = new BinOperationNode(operator, node, rightNode);
 			operator = this.match(
-				this.getTokenType(this.TokenNames.MULT),
-				this.getTokenType(this.TokenNames.DIV)
+				this.getTokenType(TokenNames.MULT),
+				this.getTokenType(TokenNames.DIV)
 			);
 		}
 		return node;
@@ -171,15 +167,15 @@ export default class Parser {
 	parseAdditive(): ExpressionNode {
 		let node = this.parseMultiplicative();
 		let operator = this.match(
-			this.getTokenType(this.TokenNames.PLUS),
-			this.getTokenType(this.TokenNames.MINUS)
+			this.getTokenType(TokenNames.PLUS),
+			this.getTokenType(TokenNames.MINUS)
 		);
 		while (operator != null) {
 			const rightNode = this.parseMultiplicative();
 			node = new BinOperationNode(operator, node, rightNode);
 			operator = this.match(
-				this.getTokenType(this.TokenNames.PLUS),
-				this.getTokenType(this.TokenNames.MINUS)
+				this.getTokenType(TokenNames.PLUS),
+				this.getTokenType(TokenNames.MINUS)
 			);
 		}
 		return node;
@@ -189,21 +185,21 @@ export default class Parser {
 	parseComparison(): ExpressionNode {
 		let node = this.parseAdditive();
 		let operator = this.match(
-			this.getTokenType(this.TokenNames.EQUAL),
-			this.getTokenType(this.TokenNames.LESS),
-			this.getTokenType(this.TokenNames.MORE),
-			this.getTokenType(this.TokenNames.LESSEQ),
-			this.getTokenType(this.TokenNames.MOREQ)
+			this.getTokenType(TokenNames.EQUAL),
+			this.getTokenType(TokenNames.LESS),
+			this.getTokenType(TokenNames.MORE),
+			this.getTokenType(TokenNames.LESSEQ),
+			this.getTokenType(TokenNames.MOREQ)
 		);
 		while (operator != null) {
 			const rightNode = this.parseAdditive();
 			node = new BinOperationNode(operator, node, rightNode);
 			operator = this.match(
-				this.getTokenType(this.TokenNames.EQUAL),
-				this.getTokenType(this.TokenNames.LESS),
-				this.getTokenType(this.TokenNames.MORE),
-				this.getTokenType(this.TokenNames.LESSEQ),
-				this.getTokenType(this.TokenNames.MOREQ)
+				this.getTokenType(TokenNames.EQUAL),
+				this.getTokenType(TokenNames.LESS),
+				this.getTokenType(TokenNames.MORE),
+				this.getTokenType(TokenNames.LESSEQ),
+				this.getTokenType(TokenNames.MOREQ)
 			);
 		}
 		return node;
@@ -216,20 +212,18 @@ export default class Parser {
 
 	// Parse function declaration
 	parseFunctionDeclaration(): ExpressionNode {
-		this.require(this.getTokenType(this.TokenNames.FUNCTION)); // Expecting 'HAM'
-		const name = this.require(this.getTokenType(this.TokenNames.VARIABLE)); // Function name
-		this.require(this.getTokenType(this.TokenNames.LPAR)); // Expecting '('
+		this.require(this.getTokenType(TokenNames.FUNCTION)); // Expecting 'HAM'
+		const name = this.require(this.getTokenType(TokenNames.VARIABLE)); // Function name
+		this.require(this.getTokenType(TokenNames.LPAR)); // Expecting '('
 
 		const params: Token[] = [];
-		if (this.match(this.getTokenType(this.TokenNames.RPAR)) == null) {
+		if (this.match(this.getTokenType(TokenNames.RPAR)) == null) {
 			do {
 				params.push(
-					this.require(this.getTokenType(this.TokenNames.VARIABLE))
+					this.require(this.getTokenType(TokenNames.VARIABLE))
 				);
-			} while (
-				this.match(this.getTokenType(this.TokenNames.COMMA)) != null
-			);
-			this.require(this.getTokenType(this.TokenNames.RPAR)); // Expecting ')'
+			} while (this.match(this.getTokenType(TokenNames.COMMA)) != null);
+			this.require(this.getTokenType(TokenNames.RPAR)); // Expecting ')'
 		}
 
 		const body = this.parseBraces() as StatementsNode; // Function body
@@ -239,16 +233,14 @@ export default class Parser {
 
 	// Parse function call
 	parseFunctionCall(name: Token): ExpressionNode {
-		this.require(this.getTokenType(this.TokenNames.LPAR)); // Expecting '('
+		this.require(this.getTokenType(TokenNames.LPAR)); // Expecting '('
 
 		const args: ExpressionNode[] = [];
-		if (this.match(this.getTokenType(this.TokenNames.RPAR)) == null) {
+		if (this.match(this.getTokenType(TokenNames.RPAR)) == null) {
 			do {
 				args.push(this.parseFormula());
-			} while (
-				this.match(this.getTokenType(this.TokenNames.COMMA)) != null
-			);
-			this.require(this.getTokenType(this.TokenNames.RPAR)); // Expecting ')'
+			} while (this.match(this.getTokenType(TokenNames.COMMA)) != null);
+			this.require(this.getTokenType(TokenNames.RPAR)); // Expecting ')'
 		}
 
 		return new FunctionCallNode(name, args);
@@ -257,10 +249,10 @@ export default class Parser {
 	// Parse return statement
 	parseReturn(): ExpressionNode {
 		// Already matched the 'RETURN' token in parseExpression.
-		const token = this.require(this.getTokenType(this.TokenNames.RETURN));
+		const token = this.require(this.getTokenType(TokenNames.RETURN));
 		const expr = this.parseFormula();
 		// Optionally require a semicolon if needed:
-		this.require(this.getTokenType(this.TokenNames.SEMICOLON));
+		this.require(this.getTokenType(TokenNames.SEMICOLON));
 		return new ReturnNode(expr);
 	}
 
@@ -269,24 +261,23 @@ export default class Parser {
 		const currentToken = this.tokens[this.pos];
 		if (
 			currentToken.type.name ===
-			this.getTokenType(this.TokenNames.FUNCTION).name
+			this.getTokenType(TokenNames.FUNCTION).name
 		) {
 			return this.parseFunctionDeclaration();
 		}
 		if (
-			currentToken.type.name ===
-			this.getTokenType(this.TokenNames.RETURN).name
+			currentToken.type.name === this.getTokenType(TokenNames.RETURN).name
 		) {
 			return this.parseReturn();
 		}
 
 		// Other checks
-		if (this.match(this.getTokenType(this.TokenNames.VARIABLE)) === null) {
-			if (this.match(this.getTokenType(this.TokenNames.LOG)) !== null) {
+		if (this.match(this.getTokenType(TokenNames.VARIABLE)) === null) {
+			if (this.match(this.getTokenType(TokenNames.LOG)) !== null) {
 				this.pos -= 1;
 				return this.parsePrint();
 			}
-			if (this.match(this.getTokenType(this.TokenNames.IF))) {
+			if (this.match(this.getTokenType(TokenNames.IF))) {
 				this.pos -= 1;
 				return this.parseIfStatement();
 			}
@@ -294,9 +285,7 @@ export default class Parser {
 
 		this.pos -= 1;
 		let variableNode = this.parseVariableOrDataTypes();
-		const assignOperator = this.match(
-			this.getTokenType(this.TokenNames.ASSIGN)
-		);
+		const assignOperator = this.match(this.getTokenType(TokenNames.ASSIGN));
 		if (assignOperator != null) {
 			const rightFormulaNode = this.parseFormula();
 			return new BinOperationNode(
@@ -311,11 +300,11 @@ export default class Parser {
 
 	// Parse if-else statement
 	parseIfStatement(): ExpressionNode {
-		this.require(this.getTokenType(this.TokenNames.IF)); // Expecting 'NEU'
+		this.require(this.getTokenType(TokenNames.IF)); // Expecting 'NEU'
 		const condition = this.parseFormula(); // Parsing the condition
 
 		// Ensure that we expect a left curly brace
-		if (this.match(this.getTokenType(this.TokenNames.LBRACE)) === null) {
+		if (this.match(this.getTokenType(TokenNames.LBRACE)) === null) {
 			throw new Error(`Expected '{' at position: ${this.pos}`);
 		}
 
@@ -324,20 +313,17 @@ export default class Parser {
 		// Move back one position because parseContext uses the match method to check for RBRACE
 		this.pos -= 1;
 
-		this.require(this.getTokenType(this.TokenNames.RBRACE)); // Expecting '}'
+		this.require(this.getTokenType(TokenNames.RBRACE)); // Expecting '}'
 
 		let falseBlock: ExpressionNode | null = null; // Initializing the false block
-		if (this.match(this.getTokenType(this.TokenNames.ELSE)) !== null) {
+		if (this.match(this.getTokenType(TokenNames.ELSE)) !== null) {
 			// Checking for 'KO THI'
-			if (this.match(this.getTokenType(this.TokenNames.IF)) !== null) {
+			if (this.match(this.getTokenType(TokenNames.IF)) !== null) {
 				// If 'else if' exists
 				this.pos -= 1; // Move back one position because we use the match method
 				falseBlock = this.parseIfStatement(); // Recursively parse else if
 			} else {
-				if (
-					this.match(this.getTokenType(this.TokenNames.LBRACE)) ===
-					null
-				) {
+				if (this.match(this.getTokenType(TokenNames.LBRACE)) === null) {
 					throw new Error(`Expected '{' at position: ${this.pos}`);
 				}
 				falseBlock = this.parseContext(); // Parsing the false block
@@ -345,7 +331,7 @@ export default class Parser {
 				// Move back one position because parseContext uses the match method to check for RBRACE
 				this.pos -= 1;
 
-				this.require(this.getTokenType(this.TokenNames.RBRACE)); // Expecting '}'
+				this.require(this.getTokenType(TokenNames.RBRACE)); // Expecting '}'
 			}
 		}
 
@@ -357,7 +343,7 @@ export default class Parser {
 		const root = new StatementsNode();
 
 		while (this.pos < this.tokens.length) {
-			if (this.match(this.getTokenType(this.TokenNames.RBRACE)) !== null)
+			if (this.match(this.getTokenType(TokenNames.RBRACE)) !== null)
 				break;
 
 			const codeStringNode = this.parseExpression();
@@ -371,7 +357,7 @@ export default class Parser {
 			) {
 				root.addNode(codeStringNode);
 			} else {
-				this.require(this.getTokenType(this.TokenNames.SEMICOLON)); // Otherwise, expect ';'
+				this.require(this.getTokenType(TokenNames.SEMICOLON)); // Otherwise, expect ';'
 				root.addNode(codeStringNode);
 			}
 		}
