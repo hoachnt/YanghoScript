@@ -1,75 +1,57 @@
-import { useTokenType } from "./tokens";
-import { Token, useToken } from "./tokens";
+import { Token, TokenNames, TokenType } from "./tokens";
 
-export default class Lexer {
-	code: string;
-	pos: number = 0;
-	tokenList: Token[] = [];
-	private createToken;
-	private getTokenType;
-	private TokenNames;
-	private tokenTypesList;
+type LexerDependencies = {
+	createToken: (type: TokenType, value: string, pos: number) => Token;
+	getTokenType: (name: TokenNames) => TokenType;
+	tokenTypesList: readonly { name: TokenNames; regex: string }[];
+};
 
-	constructor(code: string) {
-		const { createToken } = useToken();
-		const { getTokenType, TokenNames, tokenTypesList } = useTokenType();
+export const createLexer = (code: string, dependencies: LexerDependencies) => {
+	const { createToken, getTokenType, tokenTypesList } = dependencies;
 
-		this.code = code;
-		this.createToken = createToken;
-		this.getTokenType = getTokenType;
-		this.TokenNames = TokenNames;
-		this.tokenTypesList = tokenTypesList;
-	}
+	// Skips single-line comments and returns the new position
+	const skipSingleLineComment = (pos: number): number =>
+		code.indexOf("\n", pos) + 1 || code.length;
 
-	lexAnalysis(): Token[] {
-		while (this.nextToken()) {}
+	// Finds the first matching token without creating an array
+	const matchToken = (
+		pos: number
+	): { name: TokenNames; match: RegExpMatchArray } | null => {
+		for (const { name, regex } of tokenTypesList) {
+			const match = code.substring(pos).match(new RegExp(`^${regex}`));
+			if (match) return { name, match };
+		}
+		return null;
+	};
 
-		this.tokenList = this.tokenList.filter(
-			(token) =>
-				token.type.name !==
-				this.getTokenType(this.TokenNames.SPACE).name
-		);
+	// Finds the next token, returns the new position and the found token (or null)
+	const nextToken = (pos: number): [number, Token | null] => {
+		if (pos >= code.length) return [pos, null];
 
-		return this.tokenList;
-	}
+		if (code.startsWith("//", pos))
+			return [skipSingleLineComment(pos), null];
 
-	skipSingleLineComment() {
-		while (this.pos < this.code.length && this.code[this.pos] !== "\n") {
-			this.pos++;
+		const tokenMatch = matchToken(pos);
+		if (tokenMatch) {
+			const { name, match } = tokenMatch;
+			const token = createToken(getTokenType(name), match[0], pos);
+			return [pos + match[0].length, token];
 		}
 
-		if (this.pos < this.code.length && this.code[this.pos] === "\n") {
-			this.pos++;
-		}
-	}
+		return [pos, null];
+	};
 
-	nextToken(): boolean {
-		if (this.pos >= this.code.length) {
-			return false;
-		}
-
-		if (this.code.startsWith("//", this.pos)) {
-			this.skipSingleLineComment();
-
-			return true;
+	// Main function for lexical analysis (recursive traversal)
+	const lexAnalysis = (pos = 0, tokens: Token[] = []): Token[] => {
+		if (pos >= code.length) {
+			return tokens.filter(
+				({ type }) => type.name !== getTokenType(TokenNames.SPACE).name
+			);
 		}
 
-		const tokenTypesValues = Object.values(this.tokenTypesList);
+		const [newPos, token] = nextToken(pos);
+		return lexAnalysis(newPos, token ? [...tokens, token] : tokens);
+	};
 
-		for (let i = 0; i < tokenTypesValues.length; i++) {
-			const tokenType = tokenTypesValues[i];
-			const regex = new RegExp("^" + tokenType.regex);
-			const result = this.code.substr(this.pos).match(regex);
-
-			if (result && result[0]) {
-				const token = this.createToken(tokenType, result[0], this.pos);
-
-				this.pos += result[0].length;
-				this.tokenList.push(token);
-
-				return true;
-			}
-		}
-		throw new Error(`Error at this position: ${this.pos}`);
-	}
-}
+	return { lexAnalysis };
+};

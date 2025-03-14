@@ -1,14 +1,22 @@
 import Interpreter from "./Interpreter";
-import Lexer from "./Lexer";
+import { createLexer } from "./Lexer";
 import Parser from "./Parser";
+import { useToken, useTokenType } from "./tokens";
 
 export default function interpretCode(code: string) {
-	const lexer = new Lexer(code);
+	const { createToken } = useToken();
+	const { getTokenType, tokenTypesList } = useTokenType();
+
+	const lexer = createLexer(code, {
+		createToken,
+		getTokenType,
+		tokenTypesList,
+	});
+
 	const interpreter = new Interpreter();
+	const tokens = lexer.lexAnalysis();
 
-	lexer.lexAnalysis();
-
-	const parser = new Parser(lexer.tokenList, code);
+	const parser = new Parser(tokens, code);
 	const rootNode = parser.parseCode();
 
 	interpreter.run(rootNode);
