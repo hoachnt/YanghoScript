@@ -5,19 +5,17 @@ import { useToken, useTokenType } from "./tokens";
 
 export default function interpretCode(code: string) {
 	const { createToken } = useToken();
-	const { getTokenType, tokenTypesList } = useTokenType();
+	const { tokenTypesMap, tokenTypesList } = useTokenType();
 
 	const lexer = createLexer(code, {
 		createToken,
-		getTokenType,
+		tokenTypesMap,
 		tokenTypesList,
 	});
-
-	const interpreter = new Interpreter();
 	const tokens = lexer.lexAnalysis();
 
 	const parser = new Parser(tokens, code);
 	const rootNode = parser.parseCode();
 
-	interpreter.run(rootNode);
+	new Interpreter().run(rootNode);
 }

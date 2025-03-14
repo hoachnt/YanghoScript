@@ -1,56 +1,65 @@
 import { Token, TokenNames, TokenType } from "./tokens";
 
-type LexerDependencies = {
+interface ILexerDependencies {
 	createToken: (type: TokenType, value: string, pos: number) => Token;
-	getTokenType: (name: TokenNames) => TokenType;
-	tokenTypesList: readonly { name: TokenNames; regex: string }[];
-};
+	tokenTypesList: ReadonlyArray<{ name: TokenNames; regex: string }>;
+	tokenTypesMap: Readonly<
+		Record<TokenNames, { name: TokenNames; regex: string }>
+	>;
+}
 
-export const createLexer = (code: string, dependencies: LexerDependencies) => {
-	const { createToken, getTokenType, tokenTypesList } = dependencies;
+export const createLexer = (code: string, dependencies: ILexerDependencies) => {
+	const { createToken, tokenTypesList, tokenTypesMap } = dependencies;
 
-	// Skips single-line comments and returns the new position
+	// Precompile regular expressions to improve performance
+	const compiledRegexList = tokenTypesList.map(({ name, regex }) => ({
+		name,
+		regex: new RegExp(`^${regex}`),
+	}));
+
+	// Function to skip single-line comments
 	const skipSingleLineComment = (pos: number): number =>
 		code.indexOf("\n", pos) + 1 || code.length;
 
-	// Finds the first matching token without creating an array
-	const matchToken = (
-		pos: number
-	): { name: TokenNames; match: RegExpMatchArray } | null => {
-		for (const { name, regex } of tokenTypesList) {
-			const match = code.substring(pos).match(new RegExp(`^${regex}`));
-			if (match) return { name, match };
-		}
-		return null;
+	// Function to find a matching token
+	const matchToken = (pos: number): Token | null => {
+		const slice = code.slice(pos);
+		return compiledRegexList.reduce<Token | null>(
+			(found, { name, regex }) => {
+				if (found) return found;
+				const match = slice.match(regex);
+				return match
+					? createToken(tokenTypesMap[name], match[0], pos)
+					: null;
+			},
+			null
+		);
 	};
 
-	// Finds the next token, returns the new position and the found token (or null)
-	const nextToken = (pos: number): [number, Token | null] => {
+	// Function to get the next token
+	const getNextToken = (pos: number): [number, Token | null] => {
 		if (pos >= code.length) return [pos, null];
-
 		if (code.startsWith("//", pos))
 			return [skipSingleLineComment(pos), null];
 
-		const tokenMatch = matchToken(pos);
-		if (tokenMatch) {
-			const { name, match } = tokenMatch;
-			const token = createToken(getTokenType(name), match[0], pos);
-			return [pos + match[0].length, token];
-		}
-
-		return [pos, null];
+		const token = matchToken(pos);
+		return token ? [pos + token.text.length, token] : [pos, null];
 	};
 
-	// Main function for lexical analysis (recursive traversal)
-	const lexAnalysis = (pos = 0, tokens: Token[] = []): Token[] => {
-		if (pos >= code.length) {
-			return tokens.filter(
-				({ type }) => type.name !== getTokenType(TokenNames.SPACE).name
+	// Main lexical analysis function (functional approach)
+	const lexAnalysis = (): Token[] => {
+		const processTokens = (pos: number, tokens: Token[]): Token[] => {
+			if (pos >= code.length) return tokens;
+			const [newPos, token] = getNextToken(pos);
+			return processTokens(
+				newPos,
+				token && token.type !== tokenTypesMap[TokenNames.SPACE]
+					? [...tokens, token]
+					: tokens
 			);
-		}
+		};
 
-		const [newPos, token] = nextToken(pos);
-		return lexAnalysis(newPos, token ? [...tokens, token] : tokens);
+		return processTokens(0, []);
 	};
 
 	return { lexAnalysis };
