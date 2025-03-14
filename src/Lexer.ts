@@ -11,17 +11,19 @@ interface ILexerDependencies {
 export const createLexer = (code: string, dependencies: ILexerDependencies) => {
 	const { createToken, tokenTypesList, tokenTypesMap } = dependencies;
 
-	// Precompile regular expressions to improve performance
 	const compiledRegexList = tokenTypesList.map(({ name, regex }) => ({
 		name,
 		regex: new RegExp(`^${regex}`),
 	}));
 
-	// Function to skip single-line comments
 	const skipSingleLineComment = (pos: number): number =>
 		code.indexOf("\n", pos) + 1 || code.length;
 
-	// Function to find a matching token
+	const skipMultiLineComment = (pos: number): number => {
+		const endPos = code.indexOf("*/", pos + 2);
+		return endPos === -1 ? code.length : endPos + 2;
+	};
+
 	const matchToken = (pos: number): Token | null => {
 		const slice = code.slice(pos);
 		return compiledRegexList.reduce<Token | null>(
@@ -36,17 +38,17 @@ export const createLexer = (code: string, dependencies: ILexerDependencies) => {
 		);
 	};
 
-	// Function to get the next token
 	const getNextToken = (pos: number): [number, Token | null] => {
 		if (pos >= code.length) return [pos, null];
 		if (code.startsWith("//", pos))
 			return [skipSingleLineComment(pos), null];
+		if (code.startsWith("/*", pos))
+			return [skipMultiLineComment(pos), null];
 
 		const token = matchToken(pos);
 		return token ? [pos + token.text.length, token] : [pos, null];
 	};
 
-	// Main lexical analysis function (functional approach)
 	const lexAnalysis = (): Token[] => {
 		const processTokens = (pos: number, tokens: Token[]): Token[] => {
 			if (pos >= code.length) return tokens;
