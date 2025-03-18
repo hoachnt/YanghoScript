@@ -1,15 +1,15 @@
-import BinOperationNode from "./AST/BinOperationNode";
-import ExpressionNode from "./AST/ExpressionNode";
-import FunctionCallNode from "./AST/FunctionCallNode";
-import FunctionDeclarationNode from "./AST/FunctionDeclarationNode";
-import IfNode from "./AST/IfNode";
-import NumberNode from "./AST/NumberNode";
-import ReturnNode from "./AST/ReturnNode";
-import StatementsNode from "./AST/StatementsNode";
-import StringNode from "./AST/StringNode";
-import UnarOperationNode from "./AST/UnarOperationNode";
-import VariableNode from "./AST/VariableNode";
-import { TokenNames, useTokenType } from "./tokens";
+import BinOperationNode from "../AST/BinOperationNode";
+import ExpressionNode from "../AST/ExpressionNode";
+import FunctionCallNode from "../AST/FunctionCallNode";
+import FunctionDeclarationNode from "../AST/FunctionDeclarationNode";
+import IfNode from "../AST/IfNode";
+import NumberNode from "../AST/NumberNode";
+import ReturnNode from "../AST/ReturnNode";
+import StatementsNode from "../AST/StatementsNode";
+import StringNode from "../AST/StringNode";
+import UnarOperationNode from "../AST/UnarOperationNode";
+import VariableNode from "../AST/VariableNode";
+import { TokenNames, useTokenType } from "../tokens";
 
 // Define an immutable environment interface.
 export interface Environment {

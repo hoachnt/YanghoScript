@@ -1,16 +1,16 @@
-import { Token } from "./tokens";
-import { TokenNames, TokenType, useTokenType } from "./tokens/TokenType";
-import ExpressionNode from "./AST/ExpressionNode";
-import StatementsNode from "./AST/StatementsNode";
-import NumberNode from "./AST/NumberNode";
-import VariableNode from "./AST/VariableNode";
-import BinOperationNode from "./AST/BinOperationNode";
-import UnarOperationNode from "./AST/UnarOperationNode";
-import StringNode from "./AST/StringNode";
-import IfNode from "./AST/IfNode";
-import FunctionDeclarationNode from "./AST/FunctionDeclarationNode";
-import FunctionCallNode from "./AST/FunctionCallNode";
-import ReturnNode from "./AST/ReturnNode";
+import { Token } from "../tokens";
+import { TokenNames, TokenType, useTokenType } from "../tokens/TokenType";
+import ExpressionNode from "../AST/ExpressionNode";
+import StatementsNode from "../AST/StatementsNode";
+import NumberNode from "../AST/NumberNode";
+import VariableNode from "../AST/VariableNode";
+import BinOperationNode from "../AST/BinOperationNode";
+import UnarOperationNode from "../AST/UnarOperationNode";
+import StringNode from "../AST/StringNode";
+import IfNode from "../AST/IfNode";
+import FunctionDeclarationNode from "../AST/FunctionDeclarationNode";
+import FunctionCallNode from "../AST/FunctionCallNode";
+import ReturnNode from "../AST/ReturnNode";
 
 export default class Parser {
 	tokens: Token[];

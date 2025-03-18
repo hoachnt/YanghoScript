@@ -1,4 +1,4 @@
-import { Token, TokenNames, TokenType } from "./tokens";
+import { Token, TokenNames, TokenType } from "../tokens";
 
 interface ILexerDependencies {
 	createToken: (type: TokenType, value: string, pos: number) => Token;

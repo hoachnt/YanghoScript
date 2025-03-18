@@ -1,6 +1,6 @@
-import Interpreter from "./Interpreter";
-import { createLexer } from "./Lexer";
-import Parser from "./Parser";
+import Interpreter from "./core/Interpreter";
+import { createLexer } from "./core/Lexer";
+import Parser from "./core/Parser";
 import { useToken, useTokenType } from "./tokens";
 
 export default function interpretCode(code: string) {
