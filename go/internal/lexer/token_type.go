@@ -14,19 +14,19 @@ const (
 	COMMENT TokenType = "COMMENT"
 
 	// Operators
-	ASSIGN   TokenType = "="
-	PLUS     TokenType = "+"
-	MINUS    TokenType = "-"
-	ASTERISK TokenType = "*"
-	SLASH    TokenType = "/"
+	ASSIGN   TokenType = "ASSIGN"
+	PLUS     TokenType = "PLUS"
+	MINUS    TokenType = "MINUS"
+	MULTIPLY TokenType = "MULTIPLY"
+	DIVIDE    TokenType = "DIVIDE"
 
 	// Delimiters
-	COMMA     TokenType = ","
+	COMMA     TokenType = "COMMA"
 	SEMICOLON TokenType = "SEMICOLON"
-	LPAREN    TokenType = "("
-	RPAREN    TokenType = ")"
-	LBRACE    TokenType = "{"
-	RBRACE    TokenType = "}"
+	LPAREN    TokenType = "LPAREN"
+	RPAREN    TokenType = "RPAREN"
+	LBRACE    TokenType = "LBRACE"
+	RBRACE    TokenType = "RBRACE"
 
 	// Keywords
 	RETURN   TokenType = "RETURN"
@@ -62,8 +62,8 @@ var tokenPatterns = map[TokenType]*regexp.Regexp{
 	ASSIGN:    regexp.MustCompile(`^=`),
 	PLUS:      regexp.MustCompile(`^\+`),
 	MINUS:     regexp.MustCompile(`^-`),
-	ASTERISK:  regexp.MustCompile(`^\*`),
-	SLASH:     regexp.MustCompile(`^/`),
+	MULTIPLY:  regexp.MustCompile(`^\*`),
+	DIVIDE:     regexp.MustCompile(`^/`),
 	COMMA:     regexp.MustCompile(`^,`),
 	SEMICOLON: regexp.MustCompile(`^;`),
 	LPAREN:    regexp.MustCompile(`^\(`),
