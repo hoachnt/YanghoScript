@@ -35,6 +35,7 @@ func (l *Lexer) NextToken() Token {
 		return l.NextToken()
 	}
 
+	// Поиск совпадений с токенами
 	for tokenType, pattern := range tokenPatterns {
 		if match := pattern.FindString(remaining); match != "" {
 			l.pos += len(match)
@@ -45,7 +46,7 @@ func (l *Lexer) NextToken() Token {
 		}
 	}
 
-	// Если ничего не совпало, ILLEGAL
+	// Если ничего не совпало, возвращаем ILLEGAL
 	char := string(l.input[l.pos])
 	l.pos++
 	return Token{Type: ILLEGAL, Literal: char, Pos: l.pos}
@@ -70,12 +71,14 @@ func (l *Lexer) skipMultiLineComment() {
 	}
 }
 
+// Пропускаем пробелы
 func (l *Lexer) skipWhitespace() {
 	for l.pos < len(l.input) && strings.Contains(" \t\n\r", string(l.input[l.pos])) {
 		l.pos++
 	}
 }
 
+// Проверяем, является ли идентификатор ключевым словом
 func lookupIdent(ident string) TokenType {
 	if tok, ok := keywords[ident]; ok {
 		return tok

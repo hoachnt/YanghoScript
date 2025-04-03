@@ -18,7 +18,13 @@ const (
 	PLUS     TokenType = "PLUS"
 	MINUS    TokenType = "MINUS"
 	MULTIPLY TokenType = "MULTIPLY"
-	DIVIDE    TokenType = "DIVIDE"
+	DIVIDE   TokenType = "DIVIDE"
+	EQUAL    TokenType = "EQUAL"
+	LESS     TokenType = "LESS"
+	GREATER  TokenType = "GREATER"
+	LESSEQ   TokenType = "LESSEQ"   // <=
+	MOREQ    TokenType = "MOREQ"    // >=
+	NOTEQUAL TokenType = "NOTEQUAL" // !=
 
 	// Delimiters
 	COMMA     TokenType = "COMMA"
@@ -32,27 +38,31 @@ const (
 	RETURN   TokenType = "RETURN"
 	LOG      TokenType = "LOG"
 	IF       TokenType = "IF"
-	LBRACEKW TokenType = "LBRACE"
-	RBRACEKW TokenType = "RBRACE"
 	ELSE     TokenType = "ELSE"
 	FUNCTION TokenType = "FUNCTION"
-	EQUAL    TokenType = "EQUAL"
-	GREATER  TokenType = "GREATER"
-	LESS     TokenType = "LESS"
+	WHILE    TokenType = "WHILE"
+	FOR      TokenType = "FOR"
+	BREAK    TokenType = "BREAK"
+	CONTINUE TokenType = "CONTINUE"
 )
 
 var keywords = map[string]TokenType{
-	"TRA":        RETURN,
-	"IM":         SEMICOLON,
-	"NOILIENTUC": LOG,
-	"NEU":        IF,
-	"ME":         LBRACEKW,
-	"MAY":        RBRACEKW,
-	"KOTHI":      ELSE,
-	"THE":        FUNCTION,
-	"UYTIN":      EQUAL,
-	"NHIEUHON":   GREATER,
-	"ITHON":      LESS,
+	"TRA":               RETURN,
+	"IM":                SEMICOLON,
+	"NOILIENTUC":        LOG,
+	"NEU":               IF,
+	"KOTHI":             ELSE,
+	"THE":               FUNCTION,
+	"UYTIN":             EQUAL,
+	"NHIEUHON":          GREATER,
+	"ITHON":             LESS,
+	"KHONGUYTIN":        NOTEQUAL,
+	"NHIEUHONHOACUYTIN": MOREQ,
+	"ITHONHOACUYTIN":    LESSEQ,
+	"VONG":              WHILE,
+	"CHO":               FOR,
+	"DUNG":              BREAK,
+	"TIEPTUC":           CONTINUE,
 }
 
 var tokenPatterns = map[TokenType]*regexp.Regexp{
@@ -63,9 +73,15 @@ var tokenPatterns = map[TokenType]*regexp.Regexp{
 	PLUS:      regexp.MustCompile(`^\+`),
 	MINUS:     regexp.MustCompile(`^-`),
 	MULTIPLY:  regexp.MustCompile(`^\*`),
-	DIVIDE:     regexp.MustCompile(`^/`),
+	DIVIDE:    regexp.MustCompile(`^/`),
+	EQUAL:     regexp.MustCompile(`^==`),
+	LESS:      regexp.MustCompile(`^<`),
+	GREATER:   regexp.MustCompile(`^>`),
+	LESSEQ:    regexp.MustCompile(`^<=`),
+	MOREQ:     regexp.MustCompile(`^>=`),
+	NOTEQUAL:  regexp.MustCompile(`^!=`),
 	COMMA:     regexp.MustCompile(`^,`),
-	SEMICOLON: regexp.MustCompile(`^;`),
+	SEMICOLON: regexp.MustCompile(`^IM`),
 	LPAREN:    regexp.MustCompile(`^\(`),
 	RPAREN:    regexp.MustCompile(`^\)`),
 	LBRACE:    regexp.MustCompile(`^\{`),
