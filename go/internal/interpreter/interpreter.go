@@ -43,6 +43,8 @@ func (i *Interpreter) Run(node ast.Node) any {
 		return n.Value
 	case *ast.VariableNode:
 		return i.executeVariable(n)
+	case *ast.StringNode:
+		return n.Value
 	case *ast.FunctionDeclarationNode:
 		return i.executeFunctionDeclaration(n)
 	case *ast.FunctionCallNode:

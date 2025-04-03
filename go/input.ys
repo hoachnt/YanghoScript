@@ -4,3 +4,4 @@ a = 3 IM
 b = 4 IM
 
 NOILIENTUC (a + b) * 3 IM
+NOILIENTUC 'Hehe boi' IM

@@ -54,7 +54,11 @@ func (p *Parser) parseVariableOrDataTypes() ast.ExpressionNode {
 		return &ast.VariableNode{Name: variable.Literal}
 	}
 
-	panic(fmt.Sprintf("Expected variable or number at position %d", p.pos))
+	if str := p.match(lexer.STRING); str != nil {
+		return &ast.StringNode{Value: str.Literal}
+	}
+
+	panic(fmt.Sprintf("Expected variable, number, or string at position %d, got token: %+v", p.pos, p.tokens[p.pos]))
 }
 
 // Parse print statement
