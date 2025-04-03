@@ -1,39 +1,52 @@
 package main
 
 import (
-    "fmt"
-    "log"
-    "os"
+	"fmt"
+	"log"
+	"os"
 
-    "github.com/hoachnt/yanghoscript/internal/lexer"
+	"github.com/hoachnt/yanghoscript/internal/interpreter"
+	"github.com/hoachnt/yanghoscript/internal/lexer"
+	"github.com/hoachnt/yanghoscript/internal/parser"
 )
 
 func main() {
-    // Открываем файл
-    file, err := os.Open("input.ys") // Файл с кодом YanghoScript
-    if err != nil {
-        log.Fatalf("Ошибка при открытии файла: %v", err)
-    }
-    defer file.Close()
+	// Открываем файл с кодом
+	content, err := os.ReadFile("input.ys")
+	if err != nil {
+		log.Fatalf("Ошибка при чтении файла: %v", err)
+	}
 
-    // Читаем содержимое файла
-    content, err := os.ReadFile("input.ys")
-    if err != nil {
-        log.Fatalf("Ошибка при чтении файла: %v", err)
-    }
+	// Создаем лексер
+	l := lexer.NewLexer(string(content))
 
-    // Создаем лексер
-    l := lexer.NewLexer(string(content))
+	// Генерируем токены
+	var tokens []lexer.Token
+	for {
+		tok := l.NextToken()
+		tokens = append(tokens, tok)
+		if tok.Type == lexer.EOF {
+			break
+		}
+	}
 
-    // Генерируем токены
-    var tokens []lexer.Token
-    for {
-        tok := l.NextToken()
-        tokens = append(tokens, tok)
-        if tok.Type == lexer.EOF {
-            break
-        }
-    }
+	// Вывод токенов для отладки
+	for _, tok := range tokens {
+		fmt.Printf("Token: %+v\n", tok)
+	}
 
-    fmt.Printf("Parsed tokens: %+v\n", tokens)
+	// Создаем парсер
+	p := parser.New(tokens)
+
+	// Парсим код
+	ast := p.ParseCode()
+
+	// Выводим результат
+	fmt.Printf("Parsed AST: %+v\n", ast)
+
+	// Создаем интерпретатор
+	interpreter := interpreter.NewInterpreter()
+
+	fmt.Println("Executing result:")
+	interpreter.Run(ast)
 }

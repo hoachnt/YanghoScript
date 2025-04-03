@@ -63,7 +63,7 @@ func (p *Parser) parsePrint() ast.Node {
 	fmt.Printf("Parsing print statement with token: %+v\n", logToken) // Отладочный вывод
 
 	return &ast.UnarOperationNode{
-		Operator: logToken.Literal, // Используем значение токена
+		Operator: string(logToken.Type), // Используем значение токена
 		Operand:  p.parseFormula(),
 	}
 }

@@ -1,3 +1,6 @@
-NEU (5 NHIEUHON 3) ME
-    NOILIENTUC 'Lớn hơn' IM
-MAY
+// Basic example
+
+a = 3 IM
+b = 4 IM
+
+NOILIENTUC (a + b) * 3 IM
