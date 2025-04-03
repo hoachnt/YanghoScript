@@ -1,3 +1,3 @@
-module github.com/hoach-linux/yanghoscript
+module github.com/hoachnt/yanghoscript
 
 go 1.23.6
