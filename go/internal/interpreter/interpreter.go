@@ -88,6 +88,18 @@ func (i *Interpreter) executeBinOperation(node *ast.BinOperationNode) any {
 		return left * right
 	case "/":
 		return left / right
+	case "UYTIN": // Equal (==)
+		return left == right
+	case "NHIEUHON": // Greater than (>)
+		return left > right
+	case "ITHON": // Less than (<)
+		return left < right
+	case "NHIEUHONHOACUYTIN": // Greater than or equal (>=)
+		return left >= right
+	case "ITHONHOACUYTIN": // Less than or equal (<=)
+		return left <= right
+	case "KHONGUYTIN": // Not equal (!=)
+		return left != right
 	default:
 		panic(fmt.Sprintf("Unknown binary operator: %s", node.Operator))
 	}

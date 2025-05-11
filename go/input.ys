@@ -3,5 +3,11 @@
 a = 3 IM
 b = 4 IM
 
+NEU (2 ITHON 1) ME
+    NOILIENTUC 'Yasuo' IM
+MAY KOTHI ME
+    NOILIENTUC 'KO SUO' IM
+MAY
+
 NOILIENTUC (a + b) * 3 IM
 NOILIENTUC 'Hehe boi' IM
