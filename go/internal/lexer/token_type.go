@@ -52,6 +52,8 @@ var keywords = map[string]TokenType{
 	"NOILIENTUC":        LOG,
 	"NEU":               IF,
 	"KOTHI":             ELSE,
+	"ME":                LBRACE,
+	"MAY":               RBRACE,
 	"THE":               FUNCTION,
 	"UYTIN":             EQUAL,
 	"NHIEUHON":          GREATER,
