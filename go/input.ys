@@ -11,3 +11,19 @@ MAY
 
 NOILIENTUC (a + b) * 3 IM
 NOILIENTUC 'Hehe boi' IM
+
+
+number = 5 IM
+
+THE recursion(n) ME
+    NEU (n ITHON 1) ME
+        TRA 1 IM
+    MAY KOTHI ME
+        NOILIENTUC n IM
+
+        TRA recursion(n - 1) IM
+    MAY    
+MAY
+
+
+recursion(number) IM

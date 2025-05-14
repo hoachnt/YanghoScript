@@ -9,8 +9,39 @@ import (
 
 // Environment представляет окружение с переменными и функциями
 type Environment struct {
-	Scope     map[string]any
+	Scopes    []map[string]any
 	Functions map[string]*ast.FunctionDeclarationNode
+}
+
+// PushScope добавляет новую область видимости
+func (e *Environment) PushScope() {
+	e.Scopes = append(e.Scopes, make(map[string]any))
+}
+
+// PopScope удаляет текущую область видимости
+func (e *Environment) PopScope() {
+	if len(e.Scopes) == 0 {
+		panic("No scope to pop")
+	}
+	e.Scopes = e.Scopes[:len(e.Scopes)-1]
+}
+
+// CurrentScope возвращает текущую область видимости
+func (e *Environment) CurrentScope() map[string]any {
+	if len(e.Scopes) == 0 {
+		panic("No scope available")
+	}
+	return e.Scopes[len(e.Scopes)-1]
+}
+
+// GetVariable ищет переменную в цепочке областей видимости
+func (e *Environment) GetVariable(name string) (any, bool) {
+	for i := len(e.Scopes) - 1; i >= 0; i-- {
+		if value, exists := e.Scopes[i][name]; exists {
+			return value, true
+		}
+	}
+	return nil, false
 }
 
 // Interpreter выполняет узлы AST
@@ -22,7 +53,7 @@ type Interpreter struct {
 func NewInterpreter() *Interpreter {
 	return &Interpreter{
 		env: Environment{
-			Scope:     make(map[string]any),
+			Scopes:    []map[string]any{make(map[string]any)},
 			Functions: make(map[string]*ast.FunctionDeclarationNode),
 		},
 	}
@@ -70,7 +101,7 @@ func (i *Interpreter) executeStatements(node *ast.StatementsNode) any {
 // executeAssign выполняет присваивание
 func (i *Interpreter) executeAssign(node *ast.AssignNode) any {
 	value := i.Run(node.Value)
-	i.env.Scope[node.Variable.Name] = value
+	i.env.CurrentScope()[node.Variable.Name] = value
 	return value
 }
 
@@ -117,7 +148,7 @@ func (i *Interpreter) executeUnarOperation(node *ast.UnarOperationNode) any {
 
 // executeVariable возвращает значение переменной
 func (i *Interpreter) executeVariable(node *ast.VariableNode) any {
-	value, exists := i.env.Scope[node.Name]
+	value, exists := i.env.GetVariable(node.Name)
 	if !exists {
 		panic(fmt.Sprintf("Variable '%s' not found", node.Name))
 	}
@@ -137,23 +168,30 @@ func (i *Interpreter) executeFunctionCall(node *ast.FunctionCallNode) any {
 		panic(fmt.Sprintf("Function '%s' not found", node.Name))
 	}
 
-	// Создаем локальное окружение для функции
-	localEnv := Environment{
-		Scope: make(map[string]any),
-	}
+	// Добавляем новую область видимости
+	i.env.PushScope()
+	defer i.env.PopScope()
 
 	// Передаем аргументы
 	for idx, param := range function.Parameters {
-		localEnv.Scope[param] = i.Run(node.Arguments[idx])
+		i.env.CurrentScope()[param] = i.Run(node.Arguments[idx])
 	}
 
 	// Выполняем тело функции
+	var result any
 	defer func() {
+		// Обрабатываем возврат значения
 		if r := recover(); r != nil {
-			panic(r) // Возвращаем значение
+			if returnValue, ok := r.(ast.ExpressionNode); ok {
+				result = i.Run(returnValue)
+			} else {
+				panic(r) // Пробрасываем другие паники
+			}
 		}
 	}()
-	return i.Run(function.Body)
+
+	i.Run(function.Body)
+	return result
 }
 
 // executeIf выполняет условный оператор

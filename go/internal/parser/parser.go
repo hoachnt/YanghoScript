@@ -80,6 +80,17 @@ func (p *Parser) parsePrimary() ast.ExpressionNode {
 		p.require(lexer.RPAREN)
 		return node
 	}
+
+	// Check for function call
+	if ident := p.match(lexer.IDENT); ident != nil {
+		if p.pos < len(p.tokens) && p.tokens[p.pos].Type == lexer.LPAREN {
+			// Parse function call
+			return p.parseFunctionCall(ident).(ast.ExpressionNode)
+		}
+		// Otherwise, it's a variable
+		return &ast.VariableNode{Name: ident.Literal}
+	}
+
 	return p.parseVariableOrDataTypes()
 }
 
@@ -199,8 +210,78 @@ func (p *Parser) parseAssignment() ast.Node {
 	}
 }
 
-// Parse context/block
-// Parse context/block
+// ...existing code...
+
+// Parse function definition
+func (p *Parser) parseFunction() ast.Node {
+	p.require(lexer.FUNCTION)      // Expecting 'THE'
+	name := p.require(lexer.IDENT) // Function name
+	p.require(lexer.LPAREN)        // Expecting '('
+
+	// Parse parameters
+	parameters := []string{}
+	for p.match(lexer.IDENT) != nil {
+		parameters = append(parameters, p.tokens[p.pos-1].Literal)
+		if p.match(lexer.COMMA) == nil {
+			break
+		}
+	}
+
+	p.require(lexer.RPAREN) // Expecting ')'
+	p.require(lexer.LBRACE) // Expecting 'ME'
+
+	// Parse function body
+	body := p.parseContext()
+
+	p.require(lexer.RBRACE) // Expecting 'MAY'
+
+	return &ast.FunctionDeclarationNode{
+		Name:       name.Literal,
+		Parameters: parameters,
+		Body:       body,
+	}
+}
+
+// Parse function call
+func (p *Parser) parseFunctionCall(name *lexer.Token) ast.Node {
+	p.require(lexer.LPAREN) // Expecting '('
+
+	// Parse arguments
+	arguments := []ast.ExpressionNode{}
+	for {
+		// Check for closing parenthesis
+		if p.match(lexer.RPAREN) != nil {
+			break // End of arguments
+		}
+
+		// Parse argument as a formula
+		arg := p.parseFormula()
+		arguments = append(arguments, arg)
+
+		// Check for a comma or end of arguments
+		if p.match(lexer.COMMA) == nil {
+			break
+		}
+	}
+
+	p.require(lexer.RPAREN) // Expecting ')'
+
+	return &ast.FunctionCallNode{
+		Name:      name.Literal,
+		Arguments: arguments,
+	}
+}
+
+// Parse return statement
+func (p *Parser) parseReturn() ast.Node {
+	p.require(lexer.RETURN) // Expecting 'TRA'
+	value := p.parseFormula()
+	return &ast.ReturnNode{
+		Value: value,
+	}
+}
+
+// Extend parseContext to include function definitions
 func (p *Parser) parseContext() *ast.StatementsNode {
 	statements := &ast.StatementsNode{}
 
@@ -227,6 +308,19 @@ func (p *Parser) parseContext() *ast.StatementsNode {
 			statements.Statements = append(statements.Statements, p.parsePrint())
 		case lexer.IF:
 			statements.Statements = append(statements.Statements, p.parseIf())
+		case lexer.FUNCTION:
+			statements.Statements = append(statements.Statements, p.parseFunction())
+		case lexer.RETURN: // Handle return statements
+			statements.Statements = append(statements.Statements, p.parseReturn())
+		case lexer.IDENT:
+			// Check if it's a function call or assignment
+			name := p.tokens[p.pos]
+			if p.pos+1 < len(p.tokens) && p.tokens[p.pos+1].Type == lexer.LPAREN {
+				p.pos++ // Move to LPAREN
+				statements.Statements = append(statements.Statements, p.parseFunctionCall(&name))
+			} else {
+				statements.Statements = append(statements.Statements, p.parseAssignment())
+			}
 		default:
 			statements.Statements = append(statements.Statements, p.parseAssignment())
 		}
