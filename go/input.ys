@@ -1,34 +1,43 @@
-// Basic example
+// YanghoScript: functional style + Vietnamese slang keywords
 
-a = 3 IM
-b = 4 IM
+CHOT a = 3 IM
+CHOT b = 4 IM
 
 NEU (2 ITHON 1) ME
     NOILIENTUC 'Yasuo' IM
-MAY KOTHI ME
+MAY
+THOI ME
     NOILIENTUC 'KO SUO' IM
 MAY
 
 NOILIENTUC (a + b) * 3 IM
 NOILIENTUC 'Hehe boi' IM
 
-
-number = 5 IM
+CHOT number = 5 IM
 
 THE recursion(n) ME
     NEU (n ITHON 1) ME
         TRA 1 IM
-    MAY KOTHI ME
+    MAY
+    THOI ME
         NOILIENTUC n IM
-
         TRA recursion(n - 1) IM
-    MAY    
+    MAY
 MAY
 
 THE greet(name) ME
     TRA name IM
 MAY
 
-
 recursion(5) IM
 NOILIENTUC greet('Hoach') IM
+
+CHOT xs = [1, 2, 3] IM
+CHOT doubled = PHANG(xs, THE(x) ME TRA x * 2 IM MAY) IM
+NOILIENTUC doubled IM
+
+CHOT big = LOC(xs, THE(x) ME TRA x NHIEUHON 1 IM MAY) IM
+NOILIENTUC big IM
+
+CHOT sum = GAP(xs, 0, THE(a, b) ME TRA a + b IM MAY) IM
+NOILIENTUC sum IM

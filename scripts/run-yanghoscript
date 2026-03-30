@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+# Always runs the Go interpreter from this repo (avoids an old global `yanghoscript` on PATH).
+# `go -C` runs the program with cwd=go/, so relative paths to .ys are resolved from your shell cwd first.
+set -euo pipefail
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+args=()
+for a in "$@"; do
+	if [[ "$a" == *.ys ]] && [[ "$a" != /* ]]; then
+		args+=("$PWD/$a")
+	else
+		args+=("$a")
+	fi
+done
+exec env CGO_ENABLED=0 go -C "$ROOT/go" run ./cmd/yanghoscript "${args[@]}"

@@ -6,3 +6,9 @@
 *.log
 *.lock
 .DS_Store
+
+# Go interpreter build artifact
+go/yanghoscript
+
+# Local build / tooling output
+result

@@ -1,6 +1,7 @@
 package interpreter
 
 import (
+	"strings"
 	"testing"
 
 	"github.com/hoachnt/yanghoscript/internal/ast"
@@ -31,4 +32,25 @@ MAY
 	if out != "Hoach" {
 		t.Fatalf("greet('Hoach') = %v (%T), want Hoach", out, out)
 	}
+}
+
+func TestCHOTDoubleBindPanics(t *testing.T) {
+	src := `CHOT x = 1 IM
+CHOT x = 2 IM`
+	tree, err := parser.New(lexer.NewLexer(src).Tokenize()).ParseCode()
+	if err != nil {
+		t.Fatal(err)
+	}
+	interp := NewInterpreter()
+	defer func() {
+		r := recover()
+		if r == nil {
+			t.Fatal("expected panic on second CHOT in same scope")
+		}
+		s, _ := r.(string)
+		if !strings.Contains(s, "CHOT") {
+			t.Fatalf("unexpected panic: %v", r)
+		}
+	}()
+	interp.Run(tree)
 }
