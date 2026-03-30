@@ -25,5 +25,10 @@ THE recursion(n) ME
     MAY    
 MAY
 
+THE greet(name) ME
+    TRA name IM
+MAY
 
-recursion(number) IM
+
+recursion(5) IM
+NOILIENTUC greet('Hoach') IM

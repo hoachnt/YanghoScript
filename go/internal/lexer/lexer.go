@@ -35,14 +35,13 @@ func (l *Lexer) NextToken() Token {
 		return l.NextToken()
 	}
 
-	// Поиск совпадений с токенами
-	for tokenType, pattern := range tokenPatterns {
-		if match := pattern.FindString(remaining); match != "" {
+	for _, tp := range tokenPatterns {
+		if match := tp.Re.FindString(remaining); match != "" {
 			l.pos += len(match)
-			if tokenType == IDENT {
+			if tp.Type == IDENT {
 				return Token{Type: lookupIdent(match), Literal: match, Pos: l.pos}
 			}
-			return Token{Type: tokenType, Literal: match, Pos: l.pos}
+			return Token{Type: tp.Type, Literal: match, Pos: l.pos}
 		}
 	}
 
@@ -88,4 +87,17 @@ func lookupIdent(ident string) TokenType {
 
 func (t Token) String() string {
 	return fmt.Sprintf("{Type: %s, Literal: %s, Pos: %d}", t.Type, t.Literal, t.Pos)
+}
+
+// Tokenize генерирует все токены из входной строки
+func (l *Lexer) Tokenize() []Token {
+	var tokens []Token
+	for {
+		tok := l.NextToken()
+		tokens = append(tokens, tok)
+		if tok.Type == EOF {
+			break
+		}
+	}
+	return tokens
 }

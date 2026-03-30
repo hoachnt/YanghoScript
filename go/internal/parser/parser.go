@@ -36,7 +36,6 @@ func (p *Parser) match(types ...lexer.TokenType) *lexer.Token {
 
 // Require ensures the current token matches the expected type or raises an error
 func (p *Parser) require(types ...lexer.TokenType) *lexer.Token {
-	fmt.Printf("Requiring token: %v at position %d, current token: %+v\n", types, p.pos, p.tokens[p.pos]) // Отладочный вывод
 	token := p.match(types...)
 	if token == nil {
 		panic(fmt.Sprintf("Syntax Error: Expected %v at position %d", types, p.pos))
@@ -56,7 +55,11 @@ func (p *Parser) parseVariableOrDataTypes() ast.ExpressionNode {
 	}
 
 	if str := p.match(lexer.STRING); str != nil {
-		return &ast.StringNode{Value: str.Literal}
+		v := str.Literal
+		if len(v) >= 2 && v[0] == '\'' && v[len(v)-1] == '\'' {
+			v = v[1 : len(v)-1]
+		}
+		return &ast.StringNode{Value: v}
 	}
 
 	panic(fmt.Sprintf("Expected variable, number, or string at position %d, got token: %+v", p.pos, p.tokens[p.pos]))
@@ -64,8 +67,7 @@ func (p *Parser) parseVariableOrDataTypes() ast.ExpressionNode {
 
 // Parse print statement
 func (p *Parser) parsePrint() ast.Node {
-	logToken := p.require(lexer.LOG)                                  // Убедитесь, что токен LOG существует
-	fmt.Printf("Parsing print statement with token: %+v\n", logToken) // Отладочный вывод
+	logToken := p.require(lexer.LOG) // Убедитесь, что токен LOG существует
 
 	return &ast.UnarOperationNode{
 		Operator: string(logToken.Type), // Используем значение токена
@@ -210,8 +212,6 @@ func (p *Parser) parseAssignment() ast.Node {
 	}
 }
 
-// ...existing code...
-
 // Parse function definition
 func (p *Parser) parseFunction() ast.Node {
 	p.require(lexer.FUNCTION)      // Expecting 'THE'
@@ -244,32 +244,24 @@ func (p *Parser) parseFunction() ast.Node {
 
 // Parse function call
 func (p *Parser) parseFunctionCall(name *lexer.Token) ast.Node {
-	p.require(lexer.LPAREN) // Expecting '('
+	p.require(lexer.LPAREN)
 
-	// Parse arguments
 	arguments := []ast.ExpressionNode{}
+	if p.match(lexer.RPAREN) != nil {
+		return &ast.FunctionCallNode{Name: name.Literal, Arguments: arguments}
+	}
 	for {
-		// Check for closing parenthesis
+		arguments = append(arguments, p.parseFormula())
 		if p.match(lexer.RPAREN) != nil {
-			break // End of arguments
+			break
 		}
-
-		// Parse argument as a formula
-		arg := p.parseFormula()
-		arguments = append(arguments, arg)
-
-		// Check for a comma or end of arguments
 		if p.match(lexer.COMMA) == nil {
+			p.require(lexer.RPAREN)
 			break
 		}
 	}
 
-	p.require(lexer.RPAREN) // Expecting ')'
-
-	return &ast.FunctionCallNode{
-		Name:      name.Literal,
-		Arguments: arguments,
-	}
+	return &ast.FunctionCallNode{Name: name.Literal, Arguments: arguments}
 }
 
 // Parse return statement
@@ -330,6 +322,25 @@ func (p *Parser) parseContext() *ast.StatementsNode {
 }
 
 // Parse the entire program
-func (p *Parser) ParseCode() ast.Node {
-	return p.parseContext()
+func (p *Parser) ParseCode() (node *ast.StatementsNode, err error) {
+	if len(p.tokens) == 0 {
+		return nil, fmt.Errorf("no tokens to parse")
+	}
+
+	defer func() {
+		if r := recover(); r != nil {
+			switch v := r.(type) {
+			case string:
+				err = fmt.Errorf("%s", v)
+			case error:
+				err = v
+			default:
+				err = fmt.Errorf("%v", v)
+			}
+			node = nil
+		}
+	}()
+
+	node = p.parseContext()
+	return node, err
 }

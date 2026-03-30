@@ -107,32 +107,63 @@ func (i *Interpreter) executeAssign(node *ast.AssignNode) any {
 
 // executeBinOperation выполняет бинарную операцию
 func (i *Interpreter) executeBinOperation(node *ast.BinOperationNode) any {
-	left := i.Run(node.Left).(float64)
-	right := i.Run(node.Right).(float64)
+	left := i.Run(node.Left)
+	right := i.Run(node.Right)
 
-	switch node.Operator {
-	case "+":
-		return left + right
-	case "-":
-		return left - right
-	case "*":
-		return left * right
-	case "/":
-		return left / right
-	case "UYTIN": // Equal (==)
-		return left == right
-	case "NHIEUHON": // Greater than (>)
-		return left > right
-	case "ITHON": // Less than (<)
-		return left < right
-	case "NHIEUHONHOACUYTIN": // Greater than or equal (>=)
-		return left >= right
-	case "ITHONHOACUYTIN": // Less than or equal (<=)
-		return left <= right
-	case "KHONGUYTIN": // Not equal (!=)
-		return left != right
+	// Проверяем типы операндов
+	switch leftTyped := left.(type) {
+	case float64:
+		// Если левый операнд — число, проверяем правый операнд
+		rightTyped, ok := right.(float64)
+		if !ok {
+			panic(fmt.Sprintf("Type mismatch: cannot apply operator '%s' to types %T and %T", node.Operator, left, right))
+		}
+
+		// Выполняем операцию для чисел
+		switch node.Operator {
+		case "+":
+			return leftTyped + rightTyped
+		case "-":
+			return leftTyped - rightTyped
+		case "*":
+			return leftTyped * rightTyped
+		case "/":
+			if rightTyped == 0 {
+				panic("Division by zero")
+			}
+			return leftTyped / rightTyped
+		case "UYTIN": // Equal (==)
+			return leftTyped == rightTyped
+		case "NHIEUHON": // Greater than (>)
+			return leftTyped > rightTyped
+		case "ITHON": // Less than (<)
+			return leftTyped < rightTyped
+		case "NHIEUHONHOACUYTIN": // Greater than or equal (>=)
+			return leftTyped >= rightTyped
+		case "ITHONHOACUYTIN": // Less than or equal (<=)
+			return leftTyped <= rightTyped
+		case "KHONGUYTIN": // Not equal (!=)
+			return leftTyped != rightTyped
+		default:
+			panic(fmt.Sprintf("Unknown binary operator: %s", node.Operator))
+		}
+
+	case string:
+		// Если левый операнд — строка, проверяем правый операнд
+		rightTyped, ok := right.(string)
+		if !ok {
+			panic(fmt.Sprintf("Type mismatch: cannot apply operator '%s' to types %T and %T", node.Operator, left, right))
+		}
+
+		// Поддерживаем только конкатенацию для строк
+		if node.Operator == "+" {
+			return leftTyped + rightTyped
+		} else {
+			panic(fmt.Sprintf("Unsupported operator '%s' for strings", node.Operator))
+		}
+
 	default:
-		panic(fmt.Sprintf("Unknown binary operator: %s", node.Operator))
+		panic(fmt.Sprintf("Unsupported operand type: %T", left))
 	}
 }
 
@@ -161,37 +192,39 @@ func (i *Interpreter) executeFunctionDeclaration(node *ast.FunctionDeclarationNo
 	return nil
 }
 
-// executeFunctionCall выполняет вызов функции
-func (i *Interpreter) executeFunctionCall(node *ast.FunctionCallNode) any {
+// executeFunctionCall runs a function call. result is named so the defer can set the return
+// value after recover from TRA (implemented via panic); otherwise the caller receives nil.
+func (i *Interpreter) executeFunctionCall(node *ast.FunctionCallNode) (result any) {
 	function, exists := i.env.Functions[node.Name]
 	if !exists {
 		panic(fmt.Sprintf("Function '%s' not found", node.Name))
 	}
 
-	// Добавляем новую область видимости
 	i.env.PushScope()
 	defer i.env.PopScope()
 
-	// Передаем аргументы
 	for idx, param := range function.Parameters {
-		i.env.CurrentScope()[param] = i.Run(node.Arguments[idx])
+		argValue := i.Run(node.Arguments[idx])
+		switch argValue.(type) {
+		case float64, string:
+			i.env.CurrentScope()[param] = argValue
+		default:
+			panic(fmt.Sprintf("Unsupported argument type for parameter '%s': %T", param, argValue))
+		}
 	}
 
-	// Выполняем тело функции
-	var result any
 	defer func() {
-		// Обрабатываем возврат значения
 		if r := recover(); r != nil {
 			if returnValue, ok := r.(ast.ExpressionNode); ok {
 				result = i.Run(returnValue)
 			} else {
-				panic(r) // Пробрасываем другие паники
+				panic(r)
 			}
 		}
 	}()
 
 	i.Run(function.Body)
-	return result
+	return
 }
 
 // executeIf выполняет условный оператор
@@ -204,3 +237,4 @@ func (i *Interpreter) executeIf(node *ast.IfNode) any {
 	}
 	return nil
 }
+

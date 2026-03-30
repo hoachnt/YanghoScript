@@ -67,26 +67,31 @@ var keywords = map[string]TokenType{
 	"TIEPTUC":           CONTINUE,
 }
 
-var tokenPatterns = map[TokenType]*regexp.Regexp{
-	NUMBER:    regexp.MustCompile(`^\d+`),
-	IDENT:     regexp.MustCompile(`^[a-zA-Z_][a-zA-Z0-9_]*`),
-	STRING:    regexp.MustCompile(`^'[^']*'`),
-	ASSIGN:    regexp.MustCompile(`^=`),
-	PLUS:      regexp.MustCompile(`^\+`),
-	MINUS:     regexp.MustCompile(`^-`),
-	MULTIPLY:  regexp.MustCompile(`^\*`),
-	DIVIDE:    regexp.MustCompile(`^/`),
-	EQUAL:     regexp.MustCompile(`^==`),
-	LESS:      regexp.MustCompile(`^<`),
-	GREATER:   regexp.MustCompile(`^>`),
-	LESSEQ:    regexp.MustCompile(`^<=`),
-	MOREQ:     regexp.MustCompile(`^>=`),
-	NOTEQUAL:  regexp.MustCompile(`^!=`),
-	COMMA:     regexp.MustCompile(`^,`),
-	SEMICOLON: regexp.MustCompile(`^IM`),
-	LPAREN:    regexp.MustCompile(`^\(`),
-	RPAREN:    regexp.MustCompile(`^\)`),
-	LBRACE:    regexp.MustCompile(`^\{`),
-	RBRACE:    regexp.MustCompile(`^\}`),
-	COMMENT:   regexp.MustCompile(`^(//.*|/\*.*?\*/)`),
+// tokenPatterns is ordered: longer lexemes and literals must be tried before shorter/prefix
+// matches (e.g. == before =, <= before <). Map iteration in Go is randomized, so a slice is required.
+var tokenPatterns = []struct {
+	Type TokenType
+	Re   *regexp.Regexp
+}{
+	{STRING, regexp.MustCompile(`^'[^']*'`)},
+	{NUMBER, regexp.MustCompile(`^\d+`)},
+	{LESSEQ, regexp.MustCompile(`^<=`)},
+	{MOREQ, regexp.MustCompile(`^>=`)},
+	{NOTEQUAL, regexp.MustCompile(`^!=`)},
+	{EQUAL, regexp.MustCompile(`^==`)},
+	{ASSIGN, regexp.MustCompile(`^=`)},
+	{PLUS, regexp.MustCompile(`^\+`)},
+	{MINUS, regexp.MustCompile(`^-`)},
+	{MULTIPLY, regexp.MustCompile(`^\*`)},
+	{DIVIDE, regexp.MustCompile(`^/`)},
+	{LESS, regexp.MustCompile(`^<`)},
+	{GREATER, regexp.MustCompile(`^>`)},
+	{COMMA, regexp.MustCompile(`^,`)},
+	{SEMICOLON, regexp.MustCompile(`^IM`)},
+	{LPAREN, regexp.MustCompile(`^\(`)},
+	{RPAREN, regexp.MustCompile(`^\)`)},
+	{LBRACE, regexp.MustCompile(`^\{`)},
+	{RBRACE, regexp.MustCompile(`^\}`)},
+	{IDENT, regexp.MustCompile(`^[a-zA-Z_][a-zA-Z0-9_]*`)},
+	{COMMENT, regexp.MustCompile(`^(//.*|/\*.*?\*/)`)},
 }
