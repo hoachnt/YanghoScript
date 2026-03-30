@@ -1,7 +1,0 @@
-node_modules
-src
-tsconfig.json
-.eslintrc
-.prettierrc
-*.log
-*.lock

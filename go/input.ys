@@ -1,0 +1,34 @@
+// Basic example
+
+a = 3 IM
+b = 4 IM
+
+NEU (2 ITHON 1) ME
+    NOILIENTUC 'Yasuo' IM
+MAY KOTHI ME
+    NOILIENTUC 'KO SUO' IM
+MAY
+
+NOILIENTUC (a + b) * 3 IM
+NOILIENTUC 'Hehe boi' IM
+
+
+number = 5 IM
+
+THE recursion(n) ME
+    NEU (n ITHON 1) ME
+        TRA 1 IM
+    MAY KOTHI ME
+        NOILIENTUC n IM
+
+        TRA recursion(n - 1) IM
+    MAY    
+MAY
+
+THE greet(name) ME
+    TRA name IM
+MAY
+
+
+recursion(5) IM
+NOILIENTUC greet('Hoach') IM
