@@ -2,7 +2,7 @@ package lexer
 
 import "regexp"
 
-// TokenType представляет все возможные типы токенов в языке.
+// TokenType represents token kinds for YanghoScript (Vietnamese slang keywords + ASCII ops).
 type TokenType string
 
 const (
@@ -13,7 +13,6 @@ const (
 	STRING  TokenType = "STRING"
 	COMMENT TokenType = "COMMENT"
 
-	// Operators
 	ASSIGN   TokenType = "ASSIGN"
 	PLUS     TokenType = "PLUS"
 	MINUS    TokenType = "MINUS"
@@ -22,39 +21,54 @@ const (
 	EQUAL    TokenType = "EQUAL"
 	LESS     TokenType = "LESS"
 	GREATER  TokenType = "GREATER"
-	LESSEQ   TokenType = "LESSEQ"   // <=
-	MOREQ    TokenType = "MOREQ"    // >=
-	NOTEQUAL TokenType = "NOTEQUAL" // !=
+	LESSEQ   TokenType = "LESSEQ"
+	MOREQ    TokenType = "MOREQ"
+	NOTEQUAL TokenType = "NOTEQUAL"
 
-	// Delimiters
 	COMMA     TokenType = "COMMA"
 	SEMICOLON TokenType = "SEMICOLON"
 	LPAREN    TokenType = "LPAREN"
 	RPAREN    TokenType = "RPAREN"
 	LBRACE    TokenType = "LBRACE"
 	RBRACE    TokenType = "RBRACE"
+	LBRACKET  TokenType = "LBRACKET"
+	RBRACKET  TokenType = "RBRACKET"
 
-	// Keywords
 	RETURN   TokenType = "RETURN"
 	LOG      TokenType = "LOG"
 	IF       TokenType = "IF"
 	ELSE     TokenType = "ELSE"
 	FUNCTION TokenType = "FUNCTION"
+	BIND     TokenType = "BIND"
 	WHILE    TokenType = "WHILE"
 	FOR      TokenType = "FOR"
 	BREAK    TokenType = "BREAK"
 	CONTINUE TokenType = "CONTINUE"
 )
 
+// keywords: primary spellings + slang aliases → same token.
 var keywords = map[string]TokenType{
-	"TRA":               RETURN,
-	"IM":                SEMICOLON,
-	"NOILIENTUC":        LOG,
-	"NEU":               IF,
-	"KOTHI":             ELSE,
-	"ME":                LBRACE,
-	"MAY":               RBRACE,
-	"THE":               FUNCTION,
+	// return / end statement
+	"TRA": RETURN,
+	"IM":  SEMICOLON,
+	"DI":  SEMICOLON,
+	// IO (side effect)
+	"NOILIENTUC": LOG,
+	"KEU":        LOG,
+	// condition
+	"NEU":   IF,
+	"THOI":  ELSE,
+	"KOTHI": ELSE,
+	// blocks
+	"ME":   LBRACE,
+	"MO":   LBRACE,
+	"MAY":  RBRACE,
+	"DONG": RBRACE,
+	// function / immutable bind
+	"THE": FUNCTION,
+	"HUA": FUNCTION,
+	"CHOT": BIND,
+	// comparisons (Vietnamese phrasing)
 	"UYTIN":             EQUAL,
 	"NHIEUHON":          GREATER,
 	"ITHON":             LESS,
@@ -67,8 +81,6 @@ var keywords = map[string]TokenType{
 	"TIEPTUC":           CONTINUE,
 }
 
-// tokenPatterns is ordered: longer lexemes and literals must be tried before shorter/prefix
-// matches (e.g. == before =, <= before <). Map iteration in Go is randomized, so a slice is required.
 var tokenPatterns = []struct {
 	Type TokenType
 	Re   *regexp.Regexp
@@ -87,9 +99,11 @@ var tokenPatterns = []struct {
 	{LESS, regexp.MustCompile(`^<`)},
 	{GREATER, regexp.MustCompile(`^>`)},
 	{COMMA, regexp.MustCompile(`^,`)},
-	{SEMICOLON, regexp.MustCompile(`^IM`)},
+	{SEMICOLON, regexp.MustCompile(`^(IM|DI)\b`)},
 	{LPAREN, regexp.MustCompile(`^\(`)},
 	{RPAREN, regexp.MustCompile(`^\)`)},
+	{LBRACKET, regexp.MustCompile(`^\[`)},
+	{RBRACKET, regexp.MustCompile(`^\]`)},
 	{LBRACE, regexp.MustCompile(`^\{`)},
 	{RBRACE, regexp.MustCompile(`^\}`)},
 	{IDENT, regexp.MustCompile(`^[a-zA-Z_][a-zA-Z0-9_]*`)},

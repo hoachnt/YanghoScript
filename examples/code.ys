@@ -1,37 +1,49 @@
-text = 'Hoach' IM
-summ = 6 + 5 IM
+// YanghoScript showcase - functional style + Vietnamese slang (Go interpreter only)
+// From repo root:  ./scripts/run-yanghoscript examples/code.ys
+// Or from go/:  CGO_ENABLED=0 go build -o yanghoscript ./cmd/yanghoscript && ./yanghoscript --version
+//   (must print 0.2.0-go). If "Error at this position" - wrong binary on PATH; use script or ./yanghoscript from go/
 
-NOILIENTUC text IM
-NOILIENTUC summ IM
+// ----- Immutable bind (one assignment per scope) -----
+CHOT ten = 'Hoach' IM
+CHOT tong = 6 + 5 IM
+NOILIENTUC ten IM
+NOILIENTUC tong IM
 
-sumandmin = summ - 20 + 2 * 2 IM
-NOILIENTUC 8 + 2 * 10 IM // Must be 28, but I get 100
+// Arithmetic and operator precedence
+CHOT bieu_thuc = 8 + 2 * 10 IM
+NOILIENTUC bieu_thuc IM
 
-NOILIENTUC sumandmin IM
+CHOT tru_cong = tong - 20 + 2 * 2 IM
+NOILIENTUC tru_cong IM
 NOILIENTUC 'Chao ca lo nha minh nha' IM
 
+// ----- Comparisons: Vietnamese keywords + ASCII operators -----
 NOILIENTUC 1 UYTIN 1 IM
 NOILIENTUC 2 NHIEUHON 1 IM
 NOILIENTUC 1 ITHON 2 IM
-NOILIENTUC 1 NHIEUBANG 1 IM
-NOILIENTUC 2 ITBANG 2 IM
+NOILIENTUC 2 NHIEUHONHOACUYTIN 2 IM
+NOILIENTUC 2 ITHONHOACUYTIN 2 IM
+NOILIENTUC 2 KHONGUYTIN 3 IM
 
-NOILIENTUC 2 UYTIN 1 IM
-NOILIENTUC 2 NHIEUHON 3 IM
-NOILIENTUC 1 ITHON 0 IM
-NOILIENTUC 1 NHIEUBANG 2 IM
-NOILIENTUC 2 ITBANG 1 IM
+NOILIENTUC 1 == 1 IM
+NOILIENTUC 2 != 3 IM
+NOILIENTUC 2 > 1 IM
+NOILIENTUC 1 < 2 IM
+NOILIENTUC 2 >= 2 IM
+NOILIENTUC 1 <= 2 IM
 
+// ----- Conditionals: close then-branch before else-branch -----
 NEU (2 UYTIN 1) ME
     NOILIENTUC 'Yasuo' IM
-MAY KOTHI NEU (2 NHIEUHON 1) ME
+MAY
+THOI NEU (2 NHIEUHON 1) ME
     NOILIENTUC 'Kosuo' IM
-MAY KOTHI ME
+MAY
+THOI ME
     NOILIENTUC 'Default' IM
 MAY
 
-
-// Create a function
+// ----- Named functions, return, calls -----
 THE greet(name) ME
     NOILIENTUC 'Hello, ' + name IM
 MAY
@@ -40,28 +52,45 @@ THE cong(a, b) ME
     TRA a + b IM
 MAY
 
-
-// Call a function
 greet('Hoachnt') IM
 NOILIENTUC cong(1, 2) IM
 
-
-
-number = 5 IM
+// ----- Recursion -----
+CHOT number = 5 IM
 
 THE recursion(n) ME
     NEU (n ITHON 1) ME
         TRA 1 IM
-    MAY KOTHI ME
+    MAY
+    THOI ME
         NOILIENTUC n IM
-
         TRA recursion(n - 1) IM
-    MAY    
+    MAY
 MAY
-
 
 recursion(number) IM
 
-NOILIENTUC 'All Works!!!' IM
+// ----- Lists: map / filter / fold builtins -----
+CHOT xs = [1, 2, 3, 4, 5] IM
 
-// NOILIENTUC 'Hello world' - comment
+CHOT gap_doi = PHANG(xs, THE(x) ME TRA x * 2 IM MAY) IM
+NOILIENTUC gap_doi IM
+
+CHOT lon_hon = LOC(xs, THE(x) ME TRA x NHIEUHON 2 IM MAY) IM
+NOILIENTUC lon_hon IM
+
+CHOT tong_list = GAP(xs, 0, THE(a, b) ME TRA a + b IM MAY) IM
+NOILIENTUC tong_list IM
+
+// ----- First-class lambda value -----
+CHOT triple = THE(x) ME TRA x * 3 IM MAY IM
+NOILIENTUC triple(7) IM
+
+// ----- Legacy keyword aliases (still supported) -----
+HUA legacy() MO
+    KEU 'Legacy alias OK' DI
+DONG
+
+legacy() DI
+
+NOILIENTUC 'All features demo done!' IM
