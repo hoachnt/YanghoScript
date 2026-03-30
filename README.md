@@ -1,28 +1,65 @@
-# YanghoScript - Chuyển đổi từ TypeScript sang Go
+# YanghoScript
 
-Nhánh này (rewrite-in-go) được dùng để chuyển mã nguồn YanghoScript từ TypeScript sang Go.
+Ngôn ngữ thử nghiệm với từ khóa tiếng Việt. Trên nhánh **rewrite-in-go**, bản triển khai chính dùng **Go**: lexer → parser → AST → interpreter (duyệt cây), không có bước biên dịch riêng sang bytecode hay mã máy.
 
-## Mục đích
+Phiên bản sớm trên **TypeScript** nằm trong thư mục [`ts/`](ts/).
 
--   Viết lại toàn bộ Lexer, Token và Parser từ TypeScript sang Go.
--   Đảm bảo tính tương đương về logic giữa hai phiên bản.
--   Tối ưu hiệu suất và cải thiện cấu trúc.
--   Loại bỏ những giới hạn của JavaScript runtime bằng việc dùng Go.
+## Tính năng (hiện trạng)
 
-## Trạng thái
+| Phần | Hỗ trợ |
+|------|--------|
+| Kiểu giá trị | số (`float64`), chuỗi trong dấu nháy đơn, biến |
+| Phép toán | `+ - * /`, so sánh bằng từ khóa hoặc `== != < > <= >=` |
+| Gán | `tên = biểu thức` |
+| Điều kiện | `NEU … ME … MAY`, nhánh `KOTHI` (`else` / `else if`) |
+| Hàm | `THE tên(tham số, …) ME … MAY`, gọi `tên(…)`, trả về `TRA` |
+| In ra | `NOILIENTUC biểu_thức` (in ra stdout) |
+| Kết thúc câu lệnh | `IM` (tương đương dấu chấm phẩy) |
+| Ghi chú | `// …`, `/* … */` |
+| Phạm vi | ngăn xếp scope, hàm lưu toàn cục |
 
--   Lexer: Hoàn thành.
--   Token: Hoàn thành.
--   Parser: Chưa bắt đầu.
+Lexer đã có từ khóa cho vòng lặp (`VONG`, `CHO`, …) nhưng parser **chưa xử lý** — chưa thể dùng trong chương trình.
 
-## Cách sử dụng
+## CLI
 
-1. Clone repo:
-    ```sh
-    git clone -b rewrite-in-go https://github.com/hoach-linux/yanghoscript.git
-    ```
-2. Chạy lexer:
-    ```sh
-    go run main.go
-    ```
-3. Đóng góp: PRs hoặc issue luôn được chào đón!
+Biên dịch và chạy từ thư mục `go/`:
+
+```bash
+cd go
+CGO_ENABLED=0 go build -o yanghoscript ./cmd/yanghoscript
+./yanghoscript run path/to/file.ys
+```
+
+Lệnh **`run`** đọc file `.ys`, dựng AST và thực thi.
+
+Nếu máy không có trình biên dịch C (`gcc`), hãy đặt **`CGO_ENABLED=0`** khi `go build` / `go run`, nếu không có thể gặp lỗi `cgo: C compiler "gcc" not found`.
+
+## Ví dụ
+
+```text
+a = 3 IM
+THE greet(name) ME
+    TRA name IM
+MAY
+NOILIENTUC greet('Hoach') IM
+```
+
+Thêm ví dụ trong [`go/input.ys`](go/input.ys).
+
+## Cấu trúc repo (Go)
+
+| Đường dẫn | Vai trò |
+|-----------|---------|
+| `go/cmd/yanghoscript` | Điểm vào chương trình |
+| `go/internal/cli` | Lệnh CLI (cobra) |
+| `go/internal/lexer` | Token và lexer |
+| `go/internal/parser` | Parse sang AST |
+| `go/internal/ast` | Nút cây và visitor |
+| `go/internal/interpreter` | Thực thi |
+| `go/internal/version` | Phiên bản (`0.1.0`) |
+
+Module Go: `github.com/hoachnt/yanghoscript` (xem `go/go.mod`).
+
+## Yêu cầu
+
+- Go **1.23+** (xem `go/go.mod`)
